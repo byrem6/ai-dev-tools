@@ -1,7 +1,7 @@
 {
   "name": "@byrem6/ai-dev-tools",
-  "version": "1.0.2",
-  "description": "AI Dev Tools (adt) - Token-efficient CLI for AI agents and developers",
+  "version": "1.1.0",
+  "description": "AI Dev Tools (adt) - Token-efficient CLI for AI agents and developers with advanced doc analysis features",
   "main": "dist/index.js",
   "bin": {
     "adt": "./bin/adt"
@@ -41,7 +41,11 @@
     "refactoring",
     "git",
     "search",
-    "developer-productivity"
+    "developer-productivity",
+    "documentation",
+    "pattern-matching",
+    "complexity-analysis",
+    "token-optimization"
   ],
   "author": "Ramazan Hocaoglu",
   "license": "MIT",

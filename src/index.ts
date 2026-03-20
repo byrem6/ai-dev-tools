@@ -56,6 +56,12 @@ import { QuickCommand } from './commands/utility/quick';
 import { SafeCommand } from './commands/utility/safe';
 import { InitCommand } from './commands/init/init';
 import { DoctorCommand } from './commands/doctor/doctor';
+import { SplitCommand } from './commands/doc/split';
+import { TocCommand } from './commands/doc/toc';
+import { ComplexityCommand } from './commands/doc/complexity';
+import { DocCommand } from './commands/doc/doc';
+import { PatternCommand } from './commands/pattern/pattern';
+import { TagCommand } from './commands/pattern/tag';
 import { FormatManager } from './core/format';
 import { ConfigManager } from './core/config';
 import { SessionManager } from './core/session';
@@ -142,6 +148,16 @@ async function main() {
   // SYSTEM Group
   cli.registerCommand('init', new InitCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('doctor', new DoctorCommand(formatManager, configManager, sessionManager));
+
+  // DOC Group
+  cli.registerCommand('split', new SplitCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('toc', new TocCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('complexity', new ComplexityCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('doc', new DocCommand(formatManager, configManager, sessionManager));
+
+  // PATTERN Group
+  cli.registerCommand('pattern', new PatternCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('tag', new TagCommand(formatManager, configManager, sessionManager));
 
   const args = process.argv.slice(2);
   const result = await cli.execute(args);

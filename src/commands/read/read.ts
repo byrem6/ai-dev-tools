@@ -42,6 +42,10 @@ export class ReadCommand extends Command {
         return this.readFunctionByName(options.filePath, options.fn);
       }
 
+      if (options.smart) {
+        return this.readSmart(options.filePath, options.maxTokens || 8000);
+      }
+
       return this.readAll(options.filePath, options.lines || this.configManager.get('defaultLines'));
     });
   }
@@ -179,6 +183,9 @@ export class ReadCommand extends Command {
     const selectedLines = allLines.slice(readStart - 1, readEnd);
     const output = selectedLines.map((line, i) => `${readStart + i}  ${line}`).join('\n');
 
+    const hasMore = readEnd < allLines.length;
+    const nextStart = hasMore ? readEnd + 1 : undefined;
+
     return {
       ok: true,
       command: 'read',
@@ -189,6 +196,8 @@ export class ReadCommand extends Command {
       startLine: readStart,
       endLine: readEnd,
       totalLines: allLines.length,
+      hasMore,
+      nextStart,
     };
   }
 
@@ -199,6 +208,9 @@ export class ReadCommand extends Command {
     const selectedLines = allLines.slice(0, lines);
     const output = selectedLines.map((line, i) => `${i + 1}  ${line}`).join('\n');
 
+    const hasMore = allLines.length > lines;
+    const nextStart = hasMore ? lines + 1 : undefined;
+
     return {
       ok: true,
       command: 'read',
@@ -207,7 +219,8 @@ export class ReadCommand extends Command {
       file: filePath,
       lines: selectedLines.length,
       totalLines: allLines.length,
-      hasMore: allLines.length > lines,
+      hasMore,
+      nextStart,
     };
   }
 
@@ -224,6 +237,8 @@ export class ReadCommand extends Command {
     info?: boolean;
     encoding?: string;
     fmt?: OutputFormat;
+    smart?: boolean;
+    maxTokens?: number;
   } {
     const options: any = { filePath: args[0] || '' };
     
@@ -263,10 +278,54 @@ export class ReadCommand extends Command {
       } else if (arg === '--fmt' && nextArg) {
         options.fmt = nextArg as OutputFormat;
         i++;
+      } else if (arg === '--smart') {
+        options.smart = true;
+      } else if (arg === '--max-tokens' && nextArg) {
+        options.maxTokens = parseInt(nextArg, 10);
+        i++;
       }
     }
 
     return options;
+  }
+
+  private async readSmart(filePath: string, maxTokens: number): Promise<CommandResult> {
+    const content = FileUtils.readFile(filePath);
+    const allLines = content.split('\n');
+
+    let startLine = 0;
+    let currentTokens = 0;
+    const linesToRead: string[] = [];
+
+    for (let i = 0; i < allLines.length; i++) {
+      const line = allLines[i];
+      const lineTokens = TokenUtils.estimateTokens(`${i + 1}  ${line}\n`);
+
+      if (currentTokens + lineTokens > maxTokens && linesToRead.length > 0) {
+        break;
+      }
+
+      linesToRead.push(line);
+      currentTokens += lineTokens;
+      startLine = i;
+    }
+
+    const output = linesToRead.map((line, i) => `${i + 1}  ${line}`).join('\n');
+    const hasMore = startLine + 1 < allLines.length;
+    const nextStart = hasMore ? linesToRead.length + 1 : undefined;
+
+    return {
+      ok: true,
+      command: 'read',
+      tokenEstimate: TokenUtils.estimateTokens(output),
+      content: output,
+      file: filePath,
+      lines: linesToRead.length,
+      totalLines: allLines.length,
+      hasMore,
+      nextStart,
+      smart: true,
+    };
   }
 
   private async readFunction(filePath: string, fnName: string): Promise<CommandResult> {

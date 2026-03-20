@@ -48,11 +48,19 @@ export class CLI {
       return this.showHelp();
     }
 
+    if (args[0] === '--version' || args[0] === '-v') {
+      return this.showVersion();
+    }
+
+    if (args[0] === '--help' || args[0] === '-h') {
+      return this.showHelp();
+    }
+
     const commandName = args[0];
     const commandArgs = args.slice(1);
 
     const command = this.getCommand(commandName);
-    
+
     if (!command) {
       return this.showHelp();
     }
@@ -63,8 +71,16 @@ export class CLI {
 
   private showHelp(): string {
     const commandList = Array.from(this.commands.keys()).sort();
-    const helpLines = ['AI Dev Tools (adt) - Token-efficient CLI for AI agents', '', 'Usage: adt <command> [options] [--fmt slim|normal|json]', '', 'Available commands:'];
-    
+    const helpLines = [
+      `AI Dev Tools (adt) v${this.getVersion()} - Token-efficient CLI for AI agents`,
+      '',
+      'Usage: adt <command> [options] [--fmt slim|normal|json]',
+      '       adt --version',
+      '       adt --help',
+      '',
+      'Available commands:'
+    ];
+
     // AI-optimized: Show most important commands first
     const priority = {
       'read': 1, 'grep': 1, 'quick': 1, 'ai': 1, 'batch': 1,
@@ -73,24 +89,37 @@ export class CLI {
       'git-status': 3, 'git-log': 3, 'git-diff': 3,
       'exec': 3, 'platform': 3, 'lint': 3, 'test': 3,
     };
-    
+
     const sortedCommands = commandList.sort((a, b) => {
       const aPriority = priority[a as keyof typeof priority] || 99;
       const bPriority = priority[b as keyof typeof priority] || 99;
       if (aPriority !== bPriority) return aPriority - bPriority;
       return a.localeCompare(b);
     });
-    
+
     const maxLen = Math.max(...sortedCommands.map(c => c.length));
     sortedCommands.forEach(cmd => {
       helpLines.push(`  ${cmd.padEnd(maxLen)}  ${this.getCommandDescription(cmd)}`);
     });
-    
+
     helpLines.push('', 'For more information:');
     helpLines.push('  adt <command> --help');
     helpLines.push('  https://github.com/anomalyco/opencode');
-    
+
     return helpLines.join('\n');
+  }
+
+  private showVersion(): string {
+    return `adt v${this.getVersion()}`;
+  }
+
+  private getVersion(): string {
+    try {
+      const pkg = require('../../package.json');
+      return pkg.version;
+    } catch {
+      return '1.1.0';
+    }
   }
 
   private getCommandDescription(commandName: string): string {

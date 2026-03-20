@@ -94,6 +94,9 @@ export class FormatManager {
     if (result.hasMore !== undefined) {
       output += `\nhasMore: ${result.hasMore}`;
     }
+    if (result.nextStart !== undefined) {
+      output += `\nnextStart: ${result.nextStart}`;
+    }
     if (result.tokenEstimate) {
       output += `\n~tokens: ${result.tokenEstimate}`;
     }
