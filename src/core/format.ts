@@ -21,7 +21,7 @@ export class FormatManager {
       return this.formatError(result);
     }
 
-    if ('ok' in result && !result.ok) {
+    if ('ok' in result && !result.ok && 'content' in result && !result.content) {
       return this.formatError(result as ErrorResult);
     }
 
@@ -74,11 +74,11 @@ export class FormatManager {
   }
 
   private toNormal(result: CommandResult): string {
-    if (!result.ok) {
+    if (!result.ok && !result.content) {
       return 'ok: false';
     }
 
-    let output = 'ok: true';
+    let output = `ok: ${result.ok ? 'true' : 'false'}`;
     if (result.command) {
       output += `\ncommand: ${result.command}`;
     }

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { CLI } from './core/cli';
 import { ReadCommand } from './commands/read/read';
 import { OutlineCommand } from './commands/read/outline';
@@ -52,6 +54,8 @@ import { BatchCommand } from './commands/utility/batch';
 import { AICommand } from './commands/utility/ai';
 import { QuickCommand } from './commands/utility/quick';
 import { SafeCommand } from './commands/utility/safe';
+import { InitCommand } from './commands/init/init';
+import { DoctorCommand } from './commands/doctor/doctor';
 import { FormatManager } from './core/format';
 import { ConfigManager } from './core/config';
 import { SessionManager } from './core/session';
@@ -90,6 +94,7 @@ async function main() {
   cli.registerCommand('deps', new DepsCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('impact', new ImpactCommand(formatManager, configManager, sessionManager));
 
+  // GIT Group
   cli.registerCommand('git-status', new GitStatusCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('git-log', new GitLogCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('git-diff', new GitDiffCommand(formatManager, configManager, sessionManager));
@@ -134,9 +139,13 @@ async function main() {
   cli.registerCommand('copy', new CopyCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('rename', new RenameCommand(formatManager, configManager, sessionManager));
 
+  // SYSTEM Group
+  cli.registerCommand('init', new InitCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('doctor', new DoctorCommand(formatManager, configManager, sessionManager));
+
   const args = process.argv.slice(2);
   const result = await cli.execute(args);
-  
+
   console.log(result);
 }
 
@@ -144,3 +153,4 @@ main().catch(error => {
   console.error('Error:', error.message);
   process.exit(1);
 });
+

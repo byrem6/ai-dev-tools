@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+*.tsbuildinfo
+
+# Tests
+test/
+*.test.ts
+coverage/
+.nyc_output/
+
+# Documentation
+*.md
+!README.md
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+.env
+.env.local
