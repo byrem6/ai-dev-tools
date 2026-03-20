@@ -12,7 +12,7 @@
 
 ```bash
 # Install globally
-npm install -g ai-dev-tools
+npm install -g @byrem6/ai-dev-tools
 
 # Check your environment
 adt doctor
@@ -123,13 +123,13 @@ adt impact UserService --symbol update
 
 ```bash
 # Global
-npm install -g ai-dev-tools
+npm install -g @byrem6/ai-dev-tools
 
 # Local dev
-npm install --save-dev ai-dev-tools
+npm install --save-dev @byrem6/ai-dev-tools
 
 # With npx (no install)
-npx ai-dev-tools --help
+npx @byrem6/ai-dev-tools --help
 ```
 
 ## 📋 Requirements
