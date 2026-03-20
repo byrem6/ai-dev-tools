@@ -19,7 +19,6 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
 *.lcov
 
 # nyc test coverage
@@ -40,6 +39,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+docs/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
