@@ -34,9 +34,12 @@ adt info <file> --fmt slim                       # check size, encoding, binary?
 adt peek <file> --fmt slim                       # quick skeleton (imports + symbols)
 adt outline <file> --fmt slim                    # TOC for files >500 lines
 adt read <file> --start N --lines 100 --fmt normal  # read a chunk
+adt read <file> --start N --lines 100 --smart --max-tokens 5000  # token-aware
 adt read <file> --around N --context 15 --fmt normal # context around a line
 adt read <file> --fn <functionName> --fmt normal # read a function by name
 ```
+
+**Note:** `--smart` mode automatically optimizes chunk size based on token budget. `nextStart` is shown in normal format for continuation.
 
 ### Understanding Code
 ```bash
@@ -94,6 +97,18 @@ adt task status --fmt slim           # current task progress
 adt task create "<title>"
 adt task step add <id> "<step>"
 adt task step done <id> <stepNo>
+```
+
+### Documentation & Patterns
+```bash
+adt split <file> --lines 400         # split large file into sections
+adt toc <file> --auto-generate       # generate table of contents
+adt pattern find <file> --pattern "###" --fmt slim  # find patterns
+adt pattern duplicate <file> --threshold 0.8  # find duplicate content
+adt tag add <file> --tag "essential" --line 1  # add tag
+adt tag search <file> --tag "essential"  # search tags
+adt complexity <file> --by-section   # analyze code complexity
+adt doc coverage <file>              # check documentation coverage
 ```
 
 ## Reading Strategy by File Size

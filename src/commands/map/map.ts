@@ -13,10 +13,22 @@ export class MapCommand extends Command {
     this.setFormat(options.fmt || 'normal');
 
     return this.runWithLogging('map', args, async () => {
-      const targetPath = options.path || process.cwd();
+      let targetPath = options.path || process.cwd();
       
-      if (!FileUtils.fileExists(targetPath)) {
-        throw createError('ENOENT', targetPath);
+      // Resolve relative paths
+      if (targetPath !== process.cwd() && !path.isAbsolute(targetPath)) {
+        targetPath = path.resolve(process.cwd(), targetPath);
+      }
+      
+      // Check if path exists (file or directory)
+      if (!fs.existsSync(targetPath)) {
+        throw createError('ENOENT', targetPath, `Path not found: ${targetPath}. Try: adt tree . --fmt slim`);
+      }
+      
+      // Check if it's a directory
+      const stats = fs.statSync(targetPath);
+      if (!stats.isDirectory()) {
+        throw createError('ENOTDIR', targetPath, `Not a directory: ${targetPath}. Use 'adt info' for files.`);
       }
 
       return this.generateMap(targetPath, options);

@@ -328,7 +328,17 @@ CONTEXT GROUP                                       ⭐ NEW GROUP
   context set/get/decisions/conventions
 
 PATTERN GROUP                                       ⭐ NEW GROUP
-  pattern find/similar/list
+  pattern find/similar/list/save
+  pattern duplicate find
+
+TAG GROUP                                           ⭐ NEW GROUP
+  tag add/search/remove/list/report
+
+DOCUMENTATION GROUP                                 ⭐ NEW GROUP
+  split      Split large files into sections
+  toc        Generate table of contents
+  doc        Documentation coverage/stale check
+  complexity Code complexity analysis
 
 TASK GROUP                                          ⭐ NEW GROUP
   task create/step/status/list
@@ -364,14 +374,14 @@ ARCHITECTURE GROUP                                  ⭐ NEW GROUP
 WORKSPACE GROUP                                     ⭐ NEW GROUP
   workspace list/graph/affected/run
 
-DOCUMENTATION GROUP                                 ⭐ NEW GROUP
-  doc coverage/missing/stale
-
 CONFIGURATION GROUP                                 ⭐ NEW GROUP
   config flags/read/diff
 
-TAG GROUP                                           ⭐ NEW GROUP
-  tag add/search/list
+INTEGRATION GROUP                                   ⭐ NEW GROUP
+  integration list/db/queue
+
+MIGRATION GROUP                                     ⭐ NEW GROUP
+  migrate plan/scan/apply
 
 INTEGRATION GROUP                                   ⭐ NEW GROUP
   integration list/db/queue
@@ -4013,3 +4023,221 @@ adt checkpoint restore "before-refactor"
 adt session show --fmt normal
 adt hash src/services/UserService.ts --fmt slim
 ```
+
+---
+
+## DOCUMENTATION GROUP
+
+---
+
+### `adt split <file>`
+
+Splits large files into smaller, manageable sections for easier AI processing and parallel reading.
+
+```
+Options:
+  --lines <n>        Lines per split (default: 400)
+  --dry-run          Show split plan without creating files
+  --fmt slim|normal|json
+
+Output --fmt slim:
+  ok true
+  ./my.md-01.md: 1-400 (400 lines, ~1243 tokens)
+  ./my.md-02.md: 401-800 (400 lines, ~1180 tokens)
+  ./my.md-03.md: 801-1220 (420 lines, ~1450 tokens)
+
+Output --fmt normal (default):
+  ok: true
+  command: split
+  file: my.md
+  totalLines: 1220
+  linesPerSplit: 400
+  numSplits: 3
+  dryRun: false
+  ---
+  ./my.md-01.md: 1-400 (400 lines, ~1243 tokens)
+  ./my.md-02.md: 401-800 (400 lines, ~1180 tokens)
+  ./my.md-03.md: 801-1220 (420 lines, ~1450 tokens)
+```
+
+**Use Case:**
+```bash
+# Split large documentation into sections
+adt split my.md --lines 500
+
+# Preview without creating files
+adt split my.md --lines 400 --dry-run --fmt normal
+```
+
+---
+
+### `adt toc <file>`
+
+Generates table of contents for markdown files with automatic heading detection.
+
+```
+Options:
+  --auto-generate    Generate markdown TOC
+  --fmt slim|normal|json
+
+Output --fmt slim:
+  ok true
+  sections: 23
+  estimatedReadTime: 5 min
+  tokenEstimate: 970 (full file)
+  ===
+  01. ai-dev-tools — AI Dev Tools Setup (1)
+  02. Session Start (5)
+  ...
+
+Output --fmt normal (default):
+  ok: true
+  command: toc
+  file: my.md
+  sections: 23
+  estimatedReadTime: 5 min
+  tokenEstimate: 970
+  ---
+  01. ai-dev-tools — AI Dev Tools Setup (line 1)
+  02. Session Start (line 5)
+  ...
+```
+
+---
+
+### `adt pattern <action> [file]`
+
+Pattern matching, duplicate detection, and template management.
+
+```
+Actions:
+  find           Find pattern matches in file
+  duplicate      Find duplicate content blocks
+  save           Save pattern as template
+  list           List saved templates
+
+Options:
+  --pattern <regex>    Pattern to search
+  --template <text>    Template content
+  --name <name>        Template name
+  --threshold <0-1>    Similarity threshold (default: 0.8)
+  --context <n>        Context lines
+  --fmt slim|normal|json
+
+Examples:
+  # Find all headings
+  adt pattern find my.md --pattern "^###" --fmt slim
+
+  # Find duplicate content
+  adt pattern duplicate my.md --threshold 0.7 --fmt normal
+
+  # Save command template
+  adt pattern save my.md --name "command-doc" --pattern "### \`adt.*\`" --template "..."
+```
+
+---
+
+### `adt tag <action> [file]`
+
+Tag management for files and line ranges.
+
+```
+Actions:
+  add            Add tag to file/line/range
+  search         Search by tag
+  remove         Remove tag by ID
+  list           List all tags
+  report         Generate tag report
+
+Options:
+  --tag <name>         Tag name
+  --line <n>           Single line
+  --start <n> --end <n> Line range
+  --id <tag-id>        Tag ID (for remove)
+  --fmt slim|normal|json
+
+Examples:
+  adt tag add my.md --tag "essential" --line 1
+  adt tag add my.md --tag "priority:high" --line 401-800
+  adt tag search my.md --tag "essential" --fmt slim
+  adt tag report my.md --fmt normal
+```
+
+---
+
+### `adt complexity <file>`
+
+Code complexity analysis with section-by-section breakdown.
+
+```
+Options:
+  --by-section      Analyze each section separately
+  --fmt slim|normal|json
+
+Output --fmt slim:
+  ok true
+  file: src/services/UserService.ts
+  complexity: medium
+  score: 76
+
+Output --fmt normal (default, with --by-section):
+  ok: true
+  command: complexity
+  file: src/services/UserService.ts
+  ---
+  Section Complexity Analysis
+  Sections: 5
+
+  Command Reference (20-98)
+    Complexity: medium
+    Score: 76
+    Lines: 79
+
+  Reading Strategy (99-108)
+    Complexity: low
+    Score: 9
+    Lines: 10
+```
+
+---
+
+### `adt doc <action> <file>`
+
+Documentation coverage and stale content detection.
+
+```
+Actions:
+  coverage        Check documentation completeness
+  stale           Find outdated documentation
+
+Options:
+  --check <type>  Stale check type (e.g., "v5-features")
+  --fmt slim|normal|json
+
+Output --fmt normal (coverage):
+  ok: true
+  command: doc
+  action: coverage
+  file: README.md
+  totalCommands: 45
+  fullyDocumented: 38 (84%)
+  ---
+  ✓ read (has usage, options, formats, tokens)
+  ✗ grep (missing token estimates)
+  ✗ patch (missing format examples)
+
+Output --fmt normal (stale):
+  ok: true
+  command: doc
+  action: stale
+  file: README.md
+  issues: 3
+  ---
+  - Missing v5 feature: --smart flag
+  - Missing v5 feature: nextStart
+  - Found 2 outdated patterns: [WIP]
+```
+
+---
+
+

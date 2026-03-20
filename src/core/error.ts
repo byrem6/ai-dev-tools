@@ -1,5 +1,6 @@
 export const ERROR_CODES = {
   ENOENT: 'File not found',
+  ENOTDIR: 'Not a directory',
   EACCES: 'Permission denied',
   EBINARY: 'Binary file',
   ETOOBIG: 'File too large',
@@ -76,20 +77,23 @@ export function createError(
   context?: string
 ): AdtError {
   const tips: Record<ErrorCode, string | undefined> = {
-    ENOENT: path ? `adt find ${path.split('/').pop()?.split('.')[0]} --fmt slim` : undefined,
-    EACCES: 'Check file permissions',
-    EBINARY: 'Confirm with adt info',
-    ETOOBIG: 'Read with --start/--end',
-    EENCODING: 'Force with --encoding latin-1',
-    ENOMATCH: 'Try refs or search',
-    ECONFLICT: 'Re-confirm with verify',
-    ENOBACKUP: 'Manual restore required',
-    EGIT: 'Init git or change directory',
-    EEXEC: 'Read stderr field',
-    ETIMEOUT: 'Increase --timeout',
-    EMERGE_CONFLICT: 'Resolve conflicts manually',
-    EEXIST: 'Use --overwrite to replace',
-    ENOTEMPTY: 'Use --force to delete non-empty directories',
+    ENOENT: path 
+      ? `File not found: ${path}\n  Try: adt find ${path.split(/[/\\]/).pop()?.split('.')[0]} --fmt slim\n  Or: adt tree . --fmt slim`
+      : 'Path not found. Try: adt tree . --fmt slim',
+    ENOTDIR: `Not a directory: ${path}\n  Use 'adt info ${path}' for file information`,
+    EACCES: `Permission denied: ${path}\n  Check file permissions or run with appropriate privileges`,
+    EBINARY: `Binary file detected: ${path}\n  Confirm with: adt info ${path} --fmt slim\n  Use --encoding to force read`,
+    ETOOBIG: `File too large: ${path}\n  Read with: adt read ${path} --start 1 --lines 100 --fmt normal\n  Or: adt outline ${path} --fmt slim`,
+    EENCODING: `Encoding issue detected: ${path}\n  Force with: adt read ${path} --encoding latin-1 --fmt normal`,
+    ENOMATCH: `Symbol not found: ${context || path}\n  Try:\n  - adt grep "${context || path}" . --fmt slim\n  - adt refs "${context || path}" . --fmt slim\n  - adt symbols ${path || '.'} --fmt normal`,
+    ECONFLICT: `Patch conflict detected\n  Re-confirm with: adt verify ${path} --lines X:Y --contains "expected text" --fmt slim`,
+    ENOBACKUP: `No backup found for: ${path}\n  Manual restore required from: ~/.adt/backups/`,
+    EGIT: `Git error: ${context}\n  Try:\n  - adt git status --fmt slim\n  - git init (if not a git repo)\n  - Check if you're in the right directory`,
+    EEXEC: `Command failed: ${context}\n  Check stderr field for details\n  Try: adt exec "${context}" --fmt normal`,
+    ETIMEOUT: `Command timed out: ${context}\n  Increase timeout: adt exec "${context}" --timeout 30000`,
+    EMERGE_CONFLICT: `Merge conflict detected in: ${path}\n  Resolve conflicts manually then:\n  - git add .\n  - adt git commit --message "Resolve merge conflicts"`,
+    EEXIST: `File already exists: ${path}\n  Use: adt create ${path} --overwrite to replace`,
+    ENOTEMPTY: `Directory not empty: ${path}\n  Use: adt delete ${path} --force to delete non-empty directories`,
   };
 
   return new AdtError(code, path, tips[code]);

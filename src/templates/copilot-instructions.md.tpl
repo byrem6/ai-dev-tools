@@ -17,6 +17,7 @@ adt grep "<pattern>" src/ --fmt slim
 adt peek <file> --fmt slim          # quick overview
 adt outline <file> --fmt slim       # table of contents (>500 line files)
 adt read <file> --start N --lines 100 --fmt normal
+adt read <file> --start N --lines 100 --smart --max-tokens 5000  # token-aware
 ```
 
 ### Instead of `find`:
@@ -52,4 +53,17 @@ adt git push --fmt slim
 adt lint src/ --fmt slim
 adt typecheck src/ --fmt slim
 adt test --fmt slim
+```
+
+## Documentation & Pattern Analysis
+
+```bash
+adt split <file> --lines 400               # split large files into sections
+adt toc <file> --auto-generate             # generate table of contents
+adt pattern find <file> --pattern "###" --fmt slim
+adt pattern duplicate <file> --threshold 0.8
+adt tag add <file> --tag "essential" --line 1
+adt tag search <file> --tag "essential"
+adt complexity <file> --by-section
+adt doc coverage <file>
 ```

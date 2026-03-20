@@ -1,7 +1,7 @@
-import { ReadCommand } from '../../commands/read/read';
-import { GrepCommand } from '../../commands/search/grep';
-import { SessionCommand } from '../../commands/session/session';
-import { SafeCommand } from '../../commands/utility/safe';
+import { ReadCommand } from '../src/commands/read/read';
+import { GrepCommand } from '../src/commands/search/grep';
+import { SessionCommand } from '../src/commands/session/session';
+import { SafeCommand } from '../src/commands/utility/safe';
 
 describe('READ Commands', () => {
   describe('read command', () => {

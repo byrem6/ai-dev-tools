@@ -34,13 +34,14 @@ Search:
   adt find . --name "*.service.ts" --fmt slim
   adt refs <symbol> src/ --fmt slim
 
-Read:
-  adt info <file> --fmt slim
-  adt peek <file> --fmt slim
-  adt outline <file> --fmt slim
-  adt read <file> --start N --lines 100 --fmt normal
-  adt read <file> --around N --context 15 --fmt normal
-  adt read <file> --fn <functionName> --fmt normal
+ Read:
+   adt info <file> --fmt slim
+   adt peek <file> --fmt slim
+   adt outline <file> --fmt slim
+   adt read <file> --start N --lines 100 --fmt normal
+   adt read <file> --start N --lines 100 --smart --max-tokens 5000  # token-aware
+   adt read <file> --around N --context 15 --fmt normal
+   adt read <file> --fn <functionName> --fmt normal
 
 Symbols:
   adt sig <symbol> src/ --fmt slim
@@ -84,8 +85,19 @@ Analysis:
   adt complexity hotspot src/ --fmt slim
   adt dead code src/ --fmt slim
 
-Context:
-  adt context get --fmt slim
-  adt context set "<key>" "<value>"
-  adt task status --fmt slim
-  adt resume --fmt slim
+ Context:
+   adt context get --fmt slim
+   adt context set "<key>" "<value>"
+   adt task status --fmt slim
+   adt resume --fmt slim
+
+ Documentation & Patterns:
+   adt split <file> --lines 400                # split large files
+   adt toc <file> --auto-generate              # generate TOC
+   adt pattern find <file> --pattern "###" --fmt slim
+   adt pattern duplicate <file> --threshold 0.8
+   adt tag add <file> --tag "essential" --line 1
+   adt tag search <file> --tag "essential"
+   adt complexity <file> --by-section
+   adt doc coverage <file>
+

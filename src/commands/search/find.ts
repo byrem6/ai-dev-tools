@@ -13,18 +13,27 @@ export class FindCommand extends Command {
     this.setFormat(options.fmt || 'normal');
 
     return this.runWithLogging('find', args, async () => {
-      const query = options._[0];
+      // Get query from args or options
+      let query = args.find(arg => !arg.startsWith('--'));
+      
+      // If no query provided, use wildcard
+      if (!query && !options.name) {
+        query = '*';
+      }
+      
+      // If path is provided as first arg and it's a directory
       const targetPath = options.path || process.cwd();
-
-      if (!query) {
-        throw createError('ENOMATCH', '', 'Usage: adt find <query> [options]');
+      
+      if (query && fs.existsSync(query) && fs.statSync(query).isDirectory()) {
+        // First arg is a directory, use it as path
+        return this.findFiles('*', query, options);
       }
 
       if (!fs.existsSync(targetPath)) {
-        throw createError('ENOENT', targetPath);
+        throw createError('ENOENT', targetPath, `Target path not found: ${targetPath}. Try: adt tree . --fmt slim`);
       }
 
-      return this.findFiles(query, targetPath, options);
+      return this.findFiles(query || '*', targetPath, options);
     });
   }
 

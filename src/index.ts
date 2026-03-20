@@ -49,6 +49,7 @@ import { TestCommand } from './commands/quality/test';
 import { TypecheckCommand } from './commands/quality/typecheck';
 import { FormatCommand } from './commands/quality/format';
 import { SessionCommand } from './commands/session/session';
+import { ResumeCommand } from './commands/session/resume';
 import { InfoCommand } from './commands/utility/info';
 import { BatchCommand } from './commands/utility/batch';
 import { AICommand } from './commands/utility/ai';
@@ -58,10 +59,13 @@ import { InitCommand } from './commands/init/init';
 import { DoctorCommand } from './commands/doctor/doctor';
 import { SplitCommand } from './commands/doc/split';
 import { TocCommand } from './commands/doc/toc';
-import { ComplexityCommand } from './commands/doc/complexity';
 import { DocCommand } from './commands/doc/doc';
 import { PatternCommand } from './commands/pattern/pattern';
 import { TagCommand } from './commands/pattern/tag';
+import { ContextCommand } from './commands/context/context';
+import { RiskCommand } from './commands/risk/risk';
+import { SecurityCommand } from './commands/security/security';
+import { ComplexityCommand } from './commands/complexity/complexity';
 import { FormatManager } from './core/format';
 import { ConfigManager } from './core/config';
 import { SessionManager } from './core/session';
@@ -128,6 +132,7 @@ async function main() {
 
   // SESSION Group
   cli.registerCommand('session', new SessionCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('resume', new ResumeCommand(formatManager, configManager, sessionManager));
 
   // UTILITY Group
   cli.registerCommand('info', new InfoCommand(formatManager, configManager, sessionManager));
@@ -152,12 +157,23 @@ async function main() {
   // DOC Group
   cli.registerCommand('split', new SplitCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('toc', new TocCommand(formatManager, configManager, sessionManager));
-  cli.registerCommand('complexity', new ComplexityCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('doc', new DocCommand(formatManager, configManager, sessionManager));
 
   // PATTERN Group
   cli.registerCommand('pattern', new PatternCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('tag', new TagCommand(formatManager, configManager, sessionManager));
+
+  // CONTEXT Group
+  cli.registerCommand('context', new ContextCommand(formatManager, configManager, sessionManager));
+
+  // RISK Group
+  cli.registerCommand('risk', new RiskCommand(formatManager, configManager, sessionManager));
+
+  // SECURITY Group
+  cli.registerCommand('security', new SecurityCommand(formatManager, configManager, sessionManager));
+
+  // COMPLEXITY Group
+  cli.registerCommand('complexity', new ComplexityCommand(formatManager, configManager, sessionManager));
 
   const args = process.argv.slice(2);
   const result = await cli.execute(args);

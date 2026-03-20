@@ -65,7 +65,14 @@ export class PatternCommand extends Command {
         return this.findDuplicates(options.filePath, options.threshold || 0.8);
       }
 
-      throw createError('ENOMATCH', 'pattern', 'Invalid pattern command. Use: find, save, list, or duplicate');
+      if (options.action === 'similar' && options.filePath) {
+        if (!FileUtils.fileExists(options.filePath)) {
+          throw createError('ENOENT', options.filePath);
+        }
+        return this.findSimilar(options.filePath, options.threshold || 0.7);
+      }
+
+      throw createError('ENOMATCH', 'pattern', 'Invalid pattern command. Use: find, save, list, duplicate, or similar');
     });
   }
 
@@ -164,6 +171,115 @@ export class PatternCommand extends Command {
       threshold,
       duplicateCount: duplicates.length,
       duplicates: duplicates.slice(0, 20),
+    };
+  }
+
+  private async findSimilar(
+    filePath: string,
+    threshold: number
+  ): Promise<CommandResult> {
+    if (!FileUtils.fileExists(filePath)) {
+      throw createError('ENOENT', filePath);
+    }
+
+    const content = FileUtils.readFile(filePath);
+    const lines = content.split('\n');
+    
+    // Find function/method blocks using better regex
+    const functions: Array<{ name: string; start: number; end: number; content: string }> = [];
+    
+    // Match various function patterns
+    const patterns = [
+      /(?:function\s+(\w+)\s*\(|export\s+function\s+(\w+)\s*\()/g,
+      /(?:const|let|var)\s+(\w+)\s*(?:=\s*(?:async\s+)?\([^)]*\)\s*=>|=\s*async\s+\([^)]*\)\s*=>)/g,
+      /(\w+)\s*\([^)]*\)\s*{/g,  // Method definition
+      /(?:async\s+)?(\w+)\s*\([^)]*\)\s*{/g,  // Class method
+    ];
+
+    let braceLevel = 0;
+    let currentFunction: { name: string; start: number; lines: string[] } | null = null;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmed = line.trim();
+      
+      // Count braces
+      const openBraces = (line.match(/{/g) || []).length;
+      const closeBraces = (line.match(/}/g) || []).length;
+      
+      // Try to match function start
+      if (!currentFunction && braceLevel === 0) {
+        for (const pattern of patterns) {
+          pattern.lastIndex = 0;
+          const match = pattern.exec(trimmed);
+          if (match) {
+            const funcName = match[1] || match[2] || 'anonymous';
+            currentFunction = {
+              name: funcName,
+              start: i + 1,
+              lines: [line],
+            };
+            braceLevel = openBraces - closeBraces;
+            break;
+          }
+        }
+      } else if (currentFunction) {
+        currentFunction.lines.push(line);
+        braceLevel += openBraces - closeBraces;
+        
+        // Function ended
+        if (braceLevel === 0) {
+          functions.push({
+            name: currentFunction.name,
+            start: currentFunction.start,
+            end: i + 1,
+            content: currentFunction.lines.join('\n'),
+          });
+          currentFunction = null;
+        }
+      }
+    }
+
+    // Compare functions for similarity
+    const similar: Array<{ fn1: typeof functions[0]; fn2: typeof functions[0]; similarity: number }> = [];
+    
+    for (let i = 0; i < functions.length; i++) {
+      for (let j = i + 1; j < functions.length; j++) {
+        const similarity = this.calculateSimilarity(functions[i].content, functions[j].content);
+        if (similarity >= threshold) {
+          similar.push({ fn1: functions[i], fn2: functions[j], similarity });
+        }
+      }
+    }
+
+    // Sort by similarity
+    similar.sort((a, b) => b.similarity - a.similarity);
+
+    let output = `Similar Functions\n`;
+    output += `File: ${filePath}\n`;
+    output += `Threshold: ${threshold}\n`;
+    output += `Total functions: ${functions.length}\n`;
+    output += `Similar pairs found: ${similar.length}\n`;
+    output += `===\n`;
+
+    for (const sim of similar.slice(0, 20)) {
+      output += `Similarity: ${(sim.similarity * 100).toFixed(1)}%\n`;
+      output += `  ${sim.fn1.name} (lines ${sim.fn1.start}-${sim.fn1.end}, ${sim.fn1.end - sim.fn1.start + 1} lines)\n`;
+      output += `  ${sim.fn2.name} (lines ${sim.fn2.start}-${sim.fn2.end}, ${sim.fn2.end - sim.fn2.start + 1} lines)\n`;
+      output += `\n`;
+    }
+
+    return {
+      ok: true,
+      command: 'pattern',
+      action: 'similar',
+      tokenEstimate: TokenUtils.estimateTokens(output),
+      content: output,
+      file: filePath,
+      threshold,
+      totalFunctions: functions.length,
+      similarCount: similar.length,
+      similar: similar.slice(0, 20),
     };
   }
 
