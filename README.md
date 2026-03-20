@@ -2,7 +2,7 @@
 
 > Token-efficient CLI for AI agents and developers - 5-7× less token usage than JSON output
 
-[![npm version](https://badge.fury.io/js/ai-dev-tools.svg)](https://www.npmjs.com/package/ai-dev-tools)
+[![npm version](https://badge.fury.io/js/ai-dev-tools.svg)](https://www.npmjs.com/package/@byrem6/ai-dev-tools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/node/v/ai-dev-tools.svg)](https://nodejs.org)
 

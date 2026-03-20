@@ -102,7 +102,7 @@ export class DoctorCommand extends Command {
         name: 'adt',
         ok: false,
         tip: 'adt is not installed globally',
-        fix: 'npm install -g ai-dev-tools',
+        fix: 'npm install -g @byrem6/ai-dev-tools',
       };
     }
   }
