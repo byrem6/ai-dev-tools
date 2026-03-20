@@ -1,6 +1,6 @@
 {
   "name": "@byrem6/ai-dev-tools",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "AI Dev Tools (adt) - Token-efficient CLI for AI agents and developers",
   "main": "dist/index.js",
   "bin": {
