@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/80</span>
+                <span class='fraction'>0/86</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/52</span>
+                <span class='fraction'>0/58</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/79</span>
+                <span class='fraction'>0/85</span>
             </div>
         
             
@@ -230,7 +230,16 @@
 <a name='L165'></a><a href='#L165'>165</a>
 <a name='L166'></a><a href='#L166'>166</a>
 <a name='L167'></a><a href='#L167'>167</a>
-<a name='L168'></a><a href='#L168'>168</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -265,21 +274,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -423,33 +441,42 @@ import { FileUtils } from '../../utils/file';
   private <span class="fstat-no" title="function not covered" >async </span>executeCommand(command: string, options: any): Promise&lt;CommandResult&gt; {
     const platform = <span class="cstat-no" title="statement not covered" >PlatformUtils.getPlatformInfo();</span>
     let shell = <span class="cstat-no" title="statement not covered" >'bash';</span>
-    
+      
 <span class="cstat-no" title="statement not covered" >    if (options.shell) {</span>
 <span class="cstat-no" title="statement not covered" >      shell = options.shell;</span>
-    } else     <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (platform.platform === 'win32') {</span>
-<span class="cstat-no" title="statement not covered" >      shell = 'powershell';</span>
+    } else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (platform.platform === 'win32') {</span>
+<span class="cstat-no" title="statement not covered" >      shell = 'cmd';</span>
     }
 &nbsp;
     let fullCommand = <span class="cstat-no" title="statement not covered" >command;</span>
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (shell === 'powershell' &amp;&amp; !command.startsWith('powershell')) {</span>
-<span class="cstat-no" title="statement not covered" >      fullCommand = `powershell -Command "${command}"`;</span>
+    let execOptions: any = <span class="cstat-no" title="statement not covered" >{</span>
+      cwd: options.cwd || process.cwd(),
+      encoding: 'utf-8',
+      timeout: options.timeout || 30000,
+      env: { ...process.env, ...options.env },
+      maxBuffer: 10 * 1024 * 1024,
+    };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (shell === 'powershell') {</span>
+<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (!command.startsWith('powershell')) {</span>
+<span class="cstat-no" title="statement not covered" >        fullCommand = `powershell -NoProfile -Command "${command.replace(/"/g, '\\"')}"`;</span>
+      }
+<span class="cstat-no" title="statement not covered" >      execOptions.shell = 'powershell.exe';</span>
+    } else <span class="cstat-no" title="statement not covered" >if (shell === 'cmd') {</span>
+<span class="cstat-no" title="statement not covered" >      execOptions.shell = 'cmd.exe';</span>
+    } else <span class="cstat-no" title="statement not covered" >if (shell === 'bash') {</span>
+<span class="cstat-no" title="statement not covered" >      execOptions.shell = platform.platform === 'win32' ? 'bash.exe' : '/bin/bash';</span>
+    } else {
+<span class="cstat-no" title="statement not covered" >      execOptions.shell = shell;</span>
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      const cwd = <span class="cstat-no" title="statement not covered" >options.cwd || process.cwd();</span>
-      const timeout = <span class="cstat-no" title="statement not covered" >options.timeout || 30000;</span>
-      const startTime = <span class="cstat-no" title="statement not covered" >Date.now();</span>
-      
-      const stdout = <span class="cstat-no" title="statement not covered" >execSync(fullCommand, {</span>
-        cwd,
-        encoding: 'utf-8',
-        timeout,
-        env: { ...process.env, ...options.env },
-        maxBuffer: 10 * 1024 * 1024,
-      });
-      const duration = <span class="cstat-no" title="statement not covered" >Date.now() - startTime;</span>
+        const startTime = <span class="cstat-no" title="statement not covered" >Date.now();</span>
+        
+        const stdout = <span class="cstat-no" title="statement not covered" >execSync(fullCommand, execOptions);</span>
+        const duration = <span class="cstat-no" title="statement not covered" >Date.now() - startTime;</span>
 &nbsp;
-      const output = <span class="cstat-no" title="statement not covered" >this.formatOutput(stdout, '', 0, command, shell, cwd, duration, options);</span>
+      const output = <span class="cstat-no" title="statement not covered" >this.formatOutput(stdout, '', 0, command, shell, execOptions.cwd, duration, options);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      return {</span>
         ok: true,
@@ -571,7 +598,7 @@ import { FileUtils } from '../../utils/file';
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-20T18:10:03.623Z
+                at 2026-03-21T07:33:59.201Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

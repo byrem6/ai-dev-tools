@@ -21,11 +21,24 @@ export class ComplexityCommand extends Command {
     this.setFormat(options.fmt || 'normal');
 
     return this.runWithLogging('complexity', args, async () => {
-      const action = options.action || 'hotspot';
-      const targetPath = options.path || process.cwd();
+      let action = options.action || 'hotspot';
+      let targetPath = options.path || options.filePath || process.cwd();
 
       if (!fs.existsSync(targetPath)) {
         throw createError('ENOENT', targetPath);
+      }
+
+      const stats = fs.statSync(targetPath);
+      
+      if (stats.isDirectory()) {
+        if (action === 'file') {
+          action = 'hotspot';
+        }
+      } else if (stats.isFile()) {
+        if (action === 'hotspot' || action === 'debt') {
+          action = 'file';
+          options.filePath = targetPath;
+        }
       }
 
       switch (action) {

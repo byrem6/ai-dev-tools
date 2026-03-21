@@ -24,33 +24,42 @@ export class ExecCommand extends Command {
   private async executeCommand(command: string, options: any): Promise<CommandResult> {
     const platform = PlatformUtils.getPlatformInfo();
     let shell = 'bash';
-    
+      
     if (options.shell) {
       shell = options.shell;
-    } else     if (platform.platform === 'win32') {
-      shell = 'powershell';
+    } else if (platform.platform === 'win32') {
+      shell = 'cmd';
     }
 
     let fullCommand = command;
-    if (shell === 'powershell' && !command.startsWith('powershell')) {
-      fullCommand = `powershell -Command "${command}"`;
+    let execOptions: any = {
+      cwd: options.cwd || process.cwd(),
+      encoding: 'utf-8',
+      timeout: options.timeout || 30000,
+      env: { ...process.env, ...options.env },
+      maxBuffer: 10 * 1024 * 1024,
+    };
+
+    if (shell === 'powershell') {
+      if (!command.startsWith('powershell')) {
+        fullCommand = `powershell -NoProfile -Command "${command.replace(/"/g, '\\"')}"`;
+      }
+      execOptions.shell = 'powershell.exe';
+    } else if (shell === 'cmd') {
+      execOptions.shell = 'cmd.exe';
+    } else if (shell === 'bash') {
+      execOptions.shell = platform.platform === 'win32' ? 'bash.exe' : '/bin/bash';
+    } else {
+      execOptions.shell = shell;
     }
 
     try {
-      const cwd = options.cwd || process.cwd();
-      const timeout = options.timeout || 30000;
-      const startTime = Date.now();
-      
-      const stdout = execSync(fullCommand, {
-        cwd,
-        encoding: 'utf-8',
-        timeout,
-        env: { ...process.env, ...options.env },
-        maxBuffer: 10 * 1024 * 1024,
-      });
-      const duration = Date.now() - startTime;
+        const startTime = Date.now();
+        
+        const stdout = execSync(fullCommand, execOptions);
+        const duration = Date.now() - startTime;
 
-      const output = this.formatOutput(stdout, '', 0, command, shell, cwd, duration, options);
+      const output = this.formatOutput(stdout, '', 0, command, shell, execOptions.cwd, duration, options);
 
       return {
         ok: true,

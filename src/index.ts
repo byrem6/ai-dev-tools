@@ -53,8 +53,15 @@ import { ResumeCommand } from './commands/session/resume';
 import { InfoCommand } from './commands/utility/info';
 import { BatchCommand } from './commands/utility/batch';
 import { AICommand } from './commands/utility/ai';
+import { SmartCommand } from './commands/utility/smart';
 import { QuickCommand } from './commands/utility/quick';
 import { SafeCommand } from './commands/utility/safe';
+import { FilesCommand } from './commands/utility/files';
+import { RecentCommand } from './commands/utility/recent';
+import { DuplicateCommand } from './commands/utility/duplicate';
+import { UnusedCommand } from './commands/utility/unused';
+import { HealthCommand } from './commands/utility/health';
+import { ChangelogCommand } from './commands/utility/changelog';
 import { InitCommand } from './commands/init/init';
 import { DoctorCommand } from './commands/doctor/doctor';
 import { SplitCommand } from './commands/doc/split';
@@ -138,7 +145,15 @@ async function main() {
   cli.registerCommand('info', new InfoCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('batch', new BatchCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('ai', new AICommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('smart', new SmartCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('quick', new QuickCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('safe', new SafeCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('files', new FilesCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('recent', new RecentCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('duplicate', new DuplicateCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('unused', new UnusedCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('health', new HealthCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('changelog', new ChangelogCommand(formatManager, configManager, sessionManager));
 
   // EDIT Group
   cli.registerCommand('verify', new VerifyCommand(formatManager, configManager, sessionManager));

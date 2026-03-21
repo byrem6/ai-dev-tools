@@ -51,13 +51,50 @@ export class BatchCommand extends Command {
     const results = [];
     const errors = [];
 
-    for (const op of operations) {
-      try {
-        const result = await this.executeOperation(op, targetPath);
-        results.push({ op, success: true, result });
-      } catch (error: any) {
-        results.push({ op, success: false, error: error.message });
-        errors.push({ op, error: error.message });
+    if (options.parallel) {
+      const promises = operations.map(async (op) => {
+        try {
+          const result = await this.executeOperation(op, targetPath);
+          return { op, success: true, result };
+        } catch (error: any) {
+          return { op, success: false, error: error.message };
+        }
+      });
+      
+      const settled = await Promise.all(promises);
+      settled.forEach((r: any) => {
+        results.push(r);
+        if (!r.success) {
+          errors.push({ op: r.op, error: r.error });
+        }
+      });
+    } else {
+      for (const op of operations) {
+        try {
+          const result = await this.executeOperation(op, targetPath);
+          results.push({ op, success: true, result });
+          
+          if (op.pipe) {
+            const lastResult = result;
+            for (const pipeOp of op.pipe) {
+              try {
+                const pipeResult = await this.executeOperation(pipeOp, targetPath, lastResult);
+                results.push({ op: pipeOp, success: true, result: pipeResult });
+              } catch (pipeError: any) {
+                results.push({ op: pipeOp, success: false, error: pipeError.message });
+                errors.push({ op: pipeOp, error: pipeError.message });
+                break;
+              }
+            }
+          }
+        } catch (error: any) {
+          results.push({ op, success: false, error: error.message });
+          errors.push({ op, error: error.message });
+          
+          if (!options.continueOnError) {
+            break;
+          }
+        }
       }
     }
 
@@ -105,27 +142,53 @@ export class BatchCommand extends Command {
     };
   }
 
-  private async executeOperation(op: any, targetPath: string): Promise<any> {
+  private async executeOperation(op: any, targetPath: string, input?: any): Promise<any> {
+    const args = op.args || [];
+    
+    if (input && input.content) {
+      args.push('--input', JSON.stringify(input));
+    }
+
     switch (op.command) {
       case 'read':
         const { ReadCommand } = await import('../../commands/read/read');
         const readCmd = new ReadCommand(this.formatManager, this.configManager, this.sessionManager);
-        return await readCmd.execute(...op.args);
+        return await readCmd.execute(...args);
 
       case 'grep':
         const { GrepCommand } = await import('../../commands/search/grep');
         const grepCmd = new GrepCommand(this.formatManager, this.configManager, this.sessionManager);
-        return await grepCmd.execute(...op.args);
+        return await grepCmd.execute(...args);
+
+      case 'where':
+        const { WhereCommand } = await import('../../commands/search/where');
+        const whereCmd = new WhereCommand(this.formatManager, this.configManager, this.sessionManager);
+        return await whereCmd.execute(...args);
+
+      case 'symbols':
+        const { SymbolsCommand } = await import('../../commands/symbol/symbols');
+        const symbolsCmd = new SymbolsCommand(this.formatManager, this.configManager, this.sessionManager);
+        return await symbolsCmd.execute(...args);
 
       case 'verify':
         const { VerifyCommand } = await import('../../commands/edit/verify');
         const verifyCmd = new VerifyCommand(this.formatManager, this.configManager, this.sessionManager);
-        return await verifyCmd.execute(...op.args);
+        return await verifyCmd.execute(...args);
 
       case 'patch':
         const { PatchCommand } = await import('../../commands/edit/patch');
         const patchCmd = new PatchCommand(this.formatManager, this.configManager, this.sessionManager);
-        return await patchCmd.execute(...op.args);
+        return await patchCmd.execute(...args);
+
+      case 'complexity':
+        const { ComplexityCommand } = await import('../../commands/complexity/complexity');
+        const complexityCmd = new ComplexityCommand(this.formatManager, this.configManager, this.sessionManager);
+        return await complexityCmd.execute(...args);
+
+      case 'context':
+        const { ContextCommand } = await import('../../commands/context/context');
+        const contextCmd = new ContextCommand(this.formatManager, this.configManager, this.sessionManager);
+        return await contextCmd.execute(...args);
 
       default:
         throw new Error(`Unknown command: ${op.command}`);
@@ -135,25 +198,76 @@ export class BatchCommand extends Command {
   private parseBatchFile(content: string): any[] {
     const operations: any[] = [];
     const lines = content.split('\n');
-    let currentOp: any = null;
 
     lines.forEach(line => {
       line = line.trim();
-      if (!line || line.startsWith('#')) return;
+      if (!line || line.startsWith('#') || line.startsWith('//')) return;
 
-      const parts = line.split(/\s+/);
-      
-      if (parts[0] === '') return;
-
-      currentOp = {
-        command: parts[0],
-        args: parts.slice(1),
-      };
-
-      operations.push(currentOp);
+      const pipeIndex = line.indexOf('|');
+      if (pipeIndex !== -1) {
+        const leftPart = line.substring(0, pipeIndex).trim();
+        const rightPart = line.substring(pipeIndex + 1).trim();
+        
+        const leftOp = this.parseCommandString(leftPart);
+        const rightOp = this.parseCommandString(rightPart);
+        
+        leftOp.pipe = [rightOp];
+        operations.push(leftOp);
+      } else {
+        const op = this.parseCommandString(line);
+        if (op) {
+          operations.push(op);
+        }
+      }
     });
 
     return operations;
+  }
+
+  private parseCommandString(cmdStr: string): any | null {
+    const parts = this.splitCommandArgs(cmdStr);
+    if (parts.length === 0) return null;
+
+    return {
+      command: parts[0],
+      args: parts.slice(1),
+    };
+  }
+
+  private splitCommandArgs(str: string): string[] {
+    const args: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    let quoteChar = '';
+
+    for (let i = 0; i < str.length; i++) {
+      const ch = str[i];
+      
+      if ((ch === '"' || ch === "'") && (i === 0 || str[i - 1] === '\\')) {
+        if (!inQuotes) {
+          inQuotes = true;
+          quoteChar = ch;
+        } else if (ch === quoteChar) {
+          inQuotes = false;
+          quoteChar = '';
+        } else {
+          current += ch;
+        }
+      } else if (ch === ' ' && !inQuotes) {
+        if (current) {
+          args.push(current);
+          current = '';
+        }
+      } else {
+        current += ch;
+      }
+    }
+
+    if (current) {
+      args.push(current);
+    }
+
+    return args;
   }
 
   private formatBatchResults(results: any[], errors: any[], options: any): string {
@@ -222,11 +336,19 @@ export class BatchCommand extends Command {
         options.file = args[++i];
       } else if (arg === '--continue-on-error') {
         options.continueOnError = true;
+      } else if (arg === '--parallel' || arg === '-p') {
+        options.parallel = true;
+      } else if (arg === '--commands' || arg === '-c') {
+        options.commandsStr = args[++i];
       } else if (arg.startsWith('--')) {
         if (i + 1 < args.length && !args[i + 1].startsWith('--')) {
-          options[args[i].substring(2)] = args[++i];
+          options[arg.substring(2)] = args[++i];
         }
       }
+    }
+
+    if (options.commandsStr) {
+      options.operations = this.parseBatchFile(options.commandsStr);
     }
 
     return options;
