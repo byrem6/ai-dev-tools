@@ -56,10 +56,21 @@ export class CLI {
       return this.showHelp();
     }
 
-    const commandName = args[0];
-    const commandArgs = args.slice(1);
+    let commandName = args[0];
+    let commandArgs = args.slice(1);
 
-    const command = this.getCommand(commandName);
+    let command = this.getCommand(commandName);
+
+    // Support "adt git status" → "git-status", "adt task create" → "task", etc.
+    if (!command && args.length >= 2 && !args[1].startsWith('--')) {
+      const compoundName = `${args[0]}-${args[1]}`;
+      const compoundCommand = this.getCommand(compoundName);
+      if (compoundCommand) {
+        commandName = compoundName;
+        commandArgs = args.slice(2);
+        command = compoundCommand;
+      }
+    }
 
     if (!command) {
       return this.showHelp();

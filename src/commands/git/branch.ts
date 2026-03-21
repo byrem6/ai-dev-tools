@@ -45,7 +45,8 @@ export class GitBranchCommand extends Command {
 
   private async listBranches(repoPath: string, options: any): Promise<CommandResult> {
     const currentBranch = GitUtils.getCurrentBranch(repoPath) || '';
-    const branches = GitUtils.getBranches(repoPath) || [];
+    const branchData = GitUtils.getBranches(repoPath);
+    const branches = (branchData?.branches || []) as any[];
     
     const output = this.formatBranchList(branches, currentBranch, options);
 

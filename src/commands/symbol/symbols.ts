@@ -1,4 +1,4 @@
-import { Command } from '../../core/command';
+﻿import { Command } from '../../core/command';
 import { CommandResult, OutputFormat } from '../../types';
 import { FileUtils } from '../../utils/file';
 import { TokenUtils } from '../../utils/token';
@@ -70,7 +70,7 @@ export class SymbolsCommand extends Command {
         let line = `${symbol.type}  ${symbol.name}`;
         
         if (symbol.line && symbol.end) {
-          line += ` :${symbol.line}–${symbol.end}`;
+          line += ` :${symbol.line}-${symbol.end}`;
         } else if (symbol.line) {
           line += ` :${symbol.line}`;
         }
@@ -96,7 +96,7 @@ export class SymbolsCommand extends Command {
             memberLine += `${member.name}`;
             
             if (member.line && member.end) {
-              memberLine += ` :${member.line}–${member.end}`;
+              memberLine += ` :${member.line}-${member.end}`;
             } else if (member.line) {
               memberLine += ` :${member.line}`;
             }
@@ -114,7 +114,7 @@ export class SymbolsCommand extends Command {
         if (symbol.line) {
           line += `  lines ${symbol.line}`;
           if (symbol.end) {
-            line += `–${symbol.end}`;
+            line += `-${symbol.end}`;
           }
         }
 

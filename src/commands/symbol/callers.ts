@@ -34,26 +34,20 @@ export class CallersCommand extends Command {
     });
 
     const callers: any[] = [];
-    const symbolLower = symbol.toLowerCase();
 
-    for (const file of files.slice(0, 100)) {
+    // Phase 1: Find all call sites in ALL files (not just definition file)
+    for (const file of files.slice(0, 200)) {
       try {
         const content = FileUtils.readFile(file);
         const lines = content.split('\n');
 
-        // First, check if symbol is defined in this file
         const { ASTParser } = await import('../../parsers/typescript');
         const parser = new ASTParser(content);
 
         if (parser.isValid()) {
           const symbols = parser.extractSymbols();
-          const symbolDefs = symbols.filter(s => s.name.toLowerCase() === symbolLower);
-
-          if (symbolDefs.length > 0) {
-            // Found definition, now look for call sites
-            const callSites = this.findCallSitesInFile(symbol, symbols, content, file);
-            callers.push(...callSites);
-          }
+          const callSites = this.findCallSitesInFile(symbol, symbols, content, file);
+          callers.push(...callSites);
         }
       } catch (error) {
         // Skip files that can't be parsed

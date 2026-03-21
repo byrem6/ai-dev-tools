@@ -1,4 +1,4 @@
-import { Command } from '../../core/command';
+﻿import { Command } from '../../core/command';
 import { CommandResult, OutputFormat } from '../../types';
 import { FileUtils } from '../../utils/file';
 import { TokenUtils } from '../../utils/token';
@@ -141,7 +141,7 @@ export class BodyCommand extends Command {
     bodies.forEach((body, index) => {
       if (options.fmt === 'slim') {
         lines.push(`${body.file}:${body.line}`);
-        lines.push(`body :${body.line}–${body.end}  (${body.lineCount} lines)`);
+        lines.push(`body :${body.line}-${body.end}  (${body.lineCount} lines)`);
         
         if (bodies.length > 1 && index < bodies.length - 1) {
           lines.push('');
@@ -159,7 +159,7 @@ export class BodyCommand extends Command {
       } else {
         lines.push(`${body.file}`);
         lines.push(`  ${body.type} ${body.name}`);
-        lines.push(`  lines: ${body.line}–${body.end}  (${body.lineCount} lines)`);
+        lines.push(`  lines: ${body.line}-${body.end}  (${body.lineCount} lines)`);
         
         if (options.withBody) {
           lines.push(`  body:`);

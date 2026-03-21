@@ -79,7 +79,6 @@ export class GitUtils {
 
       lines.forEach((line: string) => {
         const status = line.substring(0, 2);
-        const file = line.substring(3);
 
         if (status.trim() === '') {
           return;
@@ -87,12 +86,13 @@ export class GitUtils {
 
         const statusCode = status.charAt(0);
         const statusIndex = status.charAt(1);
-
+        // Handle both "M  path" (staged) and " M path" (unstaged) — separator may vary on Windows git
+        const file = line.substring(2).trimStart();
         if (statusCode !== ' ' && statusCode !== '?') {
           staged.push(`${statusCode} ${file}`);
         }
 
-        if (statusIndex !== ' ') {
+        if (statusIndex !== ' ' && statusCode !== '?') {
           unstaged.push(`${statusIndex} ${file}`);
         }
 

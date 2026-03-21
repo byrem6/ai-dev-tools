@@ -1,4 +1,4 @@
-import { Command } from '../../core/command';
+﻿import { Command } from '../../core/command';
 import { CommandResult, OutputFormat } from '../../types';
 import { FileUtils } from '../../utils/file';
 import { TokenUtils } from '../../utils/token';
@@ -120,18 +120,18 @@ export class PeekCommand extends Command {
       }
       skeleton.forEach(item => {
         if (item.type === 'class') {
-          lines.push(`class ${item.name} :${item.line}–${item.end}`);
+          lines.push(`class ${item.name} :${item.line}-${item.end}`);
           if (item.members) {
             item.members.forEach((member: any) => {
               let memberLine = `  ${member.type === 'method' ? 'method' : 'prop'} ${member.name} :${member.line}`;
-              if (member.end) memberLine += `–${member.end}`;
+              if (member.end) memberLine += `-${member.end}`;
               if (member.async) memberLine += ' async';
               lines.push(memberLine);
             });
           }
         } else if (item.type === 'function') {
           let line = `function ${item.name} :${item.line}`;
-          if (item.end) line += `–${item.end}`;
+          if (item.end) line += `-${item.end}`;
           if (item.async) line += ' async';
           lines.push(line);
         }
@@ -176,7 +176,7 @@ export class PeekCommand extends Command {
         lines.push('skeleton:');
         skeleton.forEach(item => {
           if (item.type === 'class') {
-            let line = `  class ${item.name}                 :${item.line}–${item.end}`;
+            let line = `  class ${item.name}                 :${item.line}-${item.end}`;
             lines.push(line);
 
             if (item.members) {
@@ -186,7 +186,7 @@ export class PeekCommand extends Command {
                   memberLine += `method ${member.name}`;
                   if (member.async) memberLine += '        async';
                   memberLine += ` :${member.line}`;
-                  if (member.end) memberLine += `–${member.end}`;
+                  if (member.end) memberLine += `-${member.end}`;
                 } else if (member.type === 'property') {
                   memberLine += `property ${member.name}              :${member.line}`;
                 }
@@ -195,7 +195,7 @@ export class PeekCommand extends Command {
             }
           } else if (item.type === 'function') {
             let line = `  function ${item.name} :${item.line}`;
-            if (item.end) line += `–${item.end}`;
+            if (item.end) line += `-${item.end}`;
             if (item.async) line += '  async';
             lines.push(line);
           }

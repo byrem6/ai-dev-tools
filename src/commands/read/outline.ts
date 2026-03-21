@@ -1,4 +1,4 @@
-import { Command } from '../../core/command';
+﻿import { Command } from '../../core/command';
 import { CommandResult, OutputFormat } from '../../types';
 import { FileUtils } from '../../utils/file';
 import { TokenUtils } from '../../utils/token';
@@ -85,7 +85,7 @@ export class OutlineCommand extends Command {
         };
 
         if (withLines) {
-          classSection.lines = `${symbol.line}–${symbol.end}`;
+          classSection.lines = `${symbol.line}-${symbol.end}`;
         }
 
         if (withSize && symbol.end) {
@@ -101,7 +101,7 @@ export class OutlineCommand extends Command {
             };
 
             if (withLines && member.end) {
-              memberInfo.lines = `${member.line}–${member.end}`;
+              memberInfo.lines = `${member.line}-${member.end}`;
             }
 
             if (withSize && member.end) {
@@ -126,7 +126,7 @@ export class OutlineCommand extends Command {
         };
 
         if (withLines) {
-          fnSection.lines = `${symbol.line}–${symbol.end}`;
+          fnSection.lines = `${symbol.line}-${symbol.end}`;
         }
 
         if (withSize && symbol.end) {
@@ -147,7 +147,7 @@ export class OutlineCommand extends Command {
         };
 
         if (withLines) {
-          typeSection.lines = `${symbol.line}–${symbol.end}`;
+          typeSection.lines = `${symbol.line}-${symbol.end}`;
         }
 
         if (withSize && symbol.end) {
@@ -176,16 +176,16 @@ export class OutlineCommand extends Command {
       let line = '';
       
       if (section.type === 'import-block') {
-        line = `import-block     :${section.line}–${section.end}    (${section.summary})`;
+        line = `import-block     :${section.line}-${section.end}    (${section.summary})`;
       } else {
         const typeInfo = section.type ? `${section.type} ` : '';
         const lineInfo = withLines && section.lines ? ` ${section.lines}` : '';
         const sizeInfo = withSize && section.size ? ` (${section.size} lines)` : '';
         
         if (section.members && section.members.length > 0) {
-          line = `${typeInfo}${section.name}        :${section.line}–${section.end}  (${section.end - section.line + 1} lines)`;
+          line = `${typeInfo}${section.name}        :${section.line}-${section.end}  (${section.end - section.line + 1} lines)`;
         } else {
-          line = `${typeInfo}${section.name}        :${section.line}–${section.end || section.line}  ${sizeInfo}`;
+          line = `${typeInfo}${section.name}        :${section.line}-${section.end || section.line}  ${sizeInfo}`;
         }
       }
 

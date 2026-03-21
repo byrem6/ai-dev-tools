@@ -104,14 +104,19 @@ export class TestCommand extends Command {
     };
 
     if (testRunner === 'jest') {
-      const match = output.match(/Tests:\s+(\d+)\s+passed,\s+(\d+)\s+failed/);
-      if (match) {
-        results.passed = parseInt(match[1], 10);
-        results.failed = parseInt(match[2], 10);
-        results.total = results.passed + results.failed;
-      }
+      // Jest outputs: "Tests: 10 passed, 10 total" or "Tests: 2 failed, 8 passed, 10 total"
+      const passMatch = output.match(/Tests:\s+(?:\d+\s+\w+,\s+)*?(\d+)\s+passed/);
+      const failMatch = output.match(/Tests:\s+(\d+)\s+failed/);
+      const totalMatch = output.match(/Tests:\s+(?:.*?)(\d+)\s+total/);
+      const skipMatch = output.match(/(?:(\d+)\s+skipped)/);
+
+      if (passMatch) results.passed = parseInt(passMatch[1], 10);
+      if (failMatch) results.failed = parseInt(failMatch[1], 10);
+      if (totalMatch) results.total = parseInt(totalMatch[1], 10);
+      if (skipMatch) results.skipped = parseInt(skipMatch[1], 10);
+      if (results.total === 0) results.total = results.passed + results.failed + results.skipped;
       
-      const timeMatch = output.match(/Time:\s+([0-9.]+)s/);
+      const timeMatch = output.match(/Time:\s+([0-9.]+)\s*s/);
       if (timeMatch) {
         results.duration = parseFloat(timeMatch[1]) * 1000;
       }

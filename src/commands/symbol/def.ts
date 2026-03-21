@@ -1,4 +1,4 @@
-import { Command } from '../../core/command';
+﻿import { Command } from '../../core/command';
 import { CommandResult, OutputFormat } from '../../types';
 import { FileUtils } from '../../utils/file';
 import { TokenUtils } from '../../utils/token';
@@ -158,13 +158,13 @@ export class DefCommand extends Command {
         }
 
         lines.push(line);
-        lines.push(`body :${def.line}–${def.end}  (${def.end - def.line + 1} lines)`);
+        lines.push(`body :${def.line}-${def.end}  (${def.end - def.line + 1} lines)`);
       } else if (options.fmt === 'json') {
         lines.push(JSON.stringify(def));
       } else {
         lines.push(`${def.file}`);
         lines.push(`  type: ${def.type}${def.exported ? ' [exported]' : ''}`);
-        lines.push(`  lines: ${def.line}–${def.end}  (${def.end - def.line + 1} lines)`);
+        lines.push(`  lines: ${def.line}-${def.end}  (${def.end - def.line + 1} lines)`);
         
         if (def.class) {
           lines.push(`  class: ${def.class}`);

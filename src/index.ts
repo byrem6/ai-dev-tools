@@ -39,6 +39,9 @@ import { GitResetCommand } from './commands/git/reset';
 import { GitMergeCommand } from './commands/git/merge';
 import { GitTagCommand } from './commands/git/tag';
 import { GitCherryPickCommand } from './commands/git/cherry-pick';
+import { GitAddCommand } from './commands/git/add';
+import { GitPushCommand } from './commands/git/push';
+import { GitPullCommand } from './commands/git/pull';
 import { ExecCommand } from './commands/shell/exec';
 import { PlatformCommand } from './commands/shell/platform';
 import { RunCommand } from './commands/shell/run';
@@ -141,6 +144,9 @@ async function main() {
   cli.registerCommand('git-merge', new GitMergeCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('git-tag', new GitTagCommand(formatManager, configManager, sessionManager));
   cli.registerCommand('git-cherry-pick', new GitCherryPickCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('git-add', new GitAddCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('git-push', new GitPushCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('git-pull', new GitPullCommand(formatManager, configManager, sessionManager));
 
   // SHELL Group
   cli.registerCommand('exec', new ExecCommand(formatManager, configManager, sessionManager));
