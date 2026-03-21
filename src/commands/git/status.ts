@@ -7,6 +7,10 @@ import { createError } from '../../core/error';
 import * as path from 'path';
 
 export class GitStatusCommand extends Command {
+  public getDescription(): string {
+    return 'Show git working tree status';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

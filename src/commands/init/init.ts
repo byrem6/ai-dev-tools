@@ -20,6 +20,10 @@ interface FileToCreate {
 }
 
 export class InitCommand extends Command {
+  public getDescription(): string {
+    return 'Initialize project';
+  }
+
   private templatesDir: string;
 
   constructor(formatManager: any, configManager: any, sessionManager: any) {

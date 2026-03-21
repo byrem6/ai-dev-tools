@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} — AI Dev Tools Rules
 
-`adt` v{{ADT_VERSION}} is installed globally. Use adt for ALL file, search, and git operations.
+`adt` v{{ADT_VERSION}} is installed globally with **94 commands across 27 categories**. Use adt for ALL file, search, and git operations.
 
 ## CORE RULES
 
@@ -36,7 +36,7 @@
    adt context track "<decision>" --reason "<why>"
    ```
 
-## AI-POWERED FEATURES (v2.0)
+## 🧠 AI-POWERED FEATURES (v2.0)
 
 ### Smart Command
 ```bash
@@ -55,13 +55,15 @@ adt context search --query "<term>"  # Search through decisions
 adt context get                      # Get all project context
 ```
 
-### Batch Operations
+### Quick & Batch Operations
 ```bash
+adt quick analyze
+adt quick search "<query>"
 adt batch --file <commands.txt> --parallel
 adt batch --commands "grep 'export' src/ | symbols src/index.ts"
 ```
 
-## KEY COMMANDS
+## 🔍 KEY COMMANDS
 
 ### Search
 ```bash
@@ -97,27 +99,29 @@ adt symbols <file> --type class --exported
 ```bash
 adt verify <file> --lines N:M --contains "<text>" --fmt slim
 adt patch <file> --replace N:M --with "..." --fmt slim
-adt patch <file> --insert-after N --content "..." --fmt slim
-adt patch <file> --delete N:M --fmt slim
-adt replace src/ "<from>" "<to>" --ext ts --dry-run --fmt slim
-adt rename <old> <new> src/ --dry-run --fmt slim
+adt replace <file> "<from>" "<to>" --dry-run --fmt slim
+adt rename <old> <new> --scope project --dry-run --fmt slim
 ```
 
 ### Git
 ```bash
-adt git status --fmt slim
-adt git log --limit 10 --fmt slim
-adt git diff --staged --fmt normal
-adt git add <path> --fmt slim
-adt git commit --message "<msg>" --fmt slim
-adt git push --fmt slim
-adt git pull --fmt slim
-adt git branch list --fmt slim
-adt git branch create <name> --fmt slim
-adt git stash save "<msg>" --fmt slim
+adt git-status --fmt slim
+adt git-log --limit 10 --fmt slim
+adt git-diff --staged --fmt normal
+adt git-commit --message "<msg>" --fmt slim
+adt git-push --fmt slim
+adt git-pull --fmt slim
+adt git-branch list --fmt slim
+adt git-branch create <name> --fmt slim
+adt git-stash save "<msg>" --fmt slim
+adt git-reset soft HEAD~1
+adt git-merge feature/branch
+adt git-tag create v2.0.0
+adt git-cherry-pick abc123
 ```
 
-### Quality & Analysis
+## 📊 QUALITY & ANALYSIS
+
 ```bash
 adt lint src/ --fmt slim
 adt typecheck src/ --fmt slim
@@ -129,12 +133,91 @@ adt duplicate src/ --lines 5           # Find duplicate code
 adt unused src/ --check both           # Find unused code
 ```
 
-### Documentation
+## 🌐 API & ARCHITECTURE (v2.0)
+
 ```bash
-adt changelog --version 2.0.0          # Generate changelog
-adt toc <file>                         # Generate TOC
-adt split <file> --lines 400           # Split large files
-adt doc coverage <file>                # Check documentation
+# API endpoints
+adt api-list [path]
+adt api-find "<pattern>" [path]
+adt api-routes [path]
+
+# Architecture
+adt arch-rules list
+adt arch-check [path]
+adt arch-rule-add <spec>
+```
+
+## 🔒 SECURITY & TESTING (v2.0)
+
+```bash
+adt security [path] --severity high
+adt risk [path] --threshold high
+adt contract-check <class> [path]
+adt coverage-report [path]
+```
+
+## 🧪 GENERATION & INTEGRATION (v2.0)
+
+```bash
+# Code generation
+adt generate-service <name>
+adt generate-model <name>
+adt generate-test <name>
+
+# Integrations
+adt integration-list [path]
+adt migrate-scan <package> [path]
+adt flow-trace <symbol> [path]
+```
+
+## 📝 DOCUMENTATION (v2.0)
+
+```bash
+adt changelog --version 2.0.0
+adt toc <file>
+adt split <file> --lines 400
+adt doc coverage <file>
+```
+
+## 🗂️ WORKSPACE & TASKS (v2.0)
+
+```bash
+adt workspace-list [path]
+adt config-flags [path]
+adt history-file <file>
+
+# Tasks
+adt task create "<title>"
+adt task list --status open
+adt task step add <id> "<step>"
+```
+
+## 💾 SESSION MANAGEMENT (v2.0)
+
+```bash
+adt session show
+adt session diff
+adt session undo
+adt session checkpoint save "<msg>"
+adt session restore <id>
+```
+
+## 🎨 PATTERNS & TAGS (v2.0)
+
+```bash
+adt pattern match "<regex>" [path]
+adt pattern save "<name>" --template <file>
+adt tag add "<note>" <file> --line N
+adt tag list --sort recent
+```
+
+## 🛡️ SAFETY & DIAGNOSTICS
+
+```bash
+adt safe check [path]
+adt doctor
+adt doctor --verbose
+adt init
 ```
 
 ## TYPICAL WORKFLOW
@@ -164,10 +247,10 @@ adt batch --file plan.txt --parallel
 
 # Review
 adt smart review
-adt git diff --staged
+adt git-diff --staged
 
 # Commit
-adt git commit --message "refactor: optimize login"
+adt git-commit --message "refactor: optimize login"
 ```
 
 ## BEST PRACTICES
@@ -179,3 +262,4 @@ adt git commit --message "refactor: optimize login"
 5. Use `adt smart review` before committing
 6. Check `adt health` periodically
 7. Use `--fmt slim` for queries, `--fmt normal` for content
+8. Leverage v2.0 features: API, architecture, security, generation

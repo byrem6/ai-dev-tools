@@ -2,11 +2,11 @@
 
 ## Dev Tooling
 
-`adt` (ai-dev-tools) v{{ADT_VERSION}} is installed globally. Use `adt` for ALL file operations, search, and git tasks.
+`adt` (ai-dev-tools) v{{ADT_VERSION}} is installed globally with **94 commands across 27 categories**. Use `adt` for ALL file operations, search, and git tasks.
 
 ## When suggesting terminal commands, always use adt:
 
-### AI-Powered Features (v2.0)
+### 🧠 AI-Powered Features (v2.0)
 
 ```bash
 # Smart suggestions based on codebase state
@@ -20,11 +20,15 @@ adt context track "<decision>" --reason "<why>"
 adt context history                  # View past decisions
 adt context suggest                  # AI suggestions based on context
 
+# Quick operations
+adt quick analyze
+adt quick search "<query>"
+
 # Batch operations
 adt batch --file <commands.txt> --parallel
 ```
 
-### Instead of `grep`
+### 🔍 Instead of `grep`
 
 ```bash
 adt grep "<pattern>" src/ --fmt slim
@@ -32,7 +36,7 @@ adt grep "<pattern>" . --regex --fmt slim
 adt search "<pattern>" src/ --fmt normal
 ```
 
-### Instead of `cat` / reading files
+### 📖 Instead of `cat` / reading files
 
 ```bash
 adt peek <file> --fmt slim              # quick overview
@@ -41,7 +45,7 @@ adt read <file> --start N --lines 100 --fmt normal
 adt read <file> --fn <functionName> --fmt normal
 ```
 
-### Instead of `find`
+### 🔎 Instead of `find`
 
 ```bash
 adt find . --name "*.service.ts" --fmt slim
@@ -49,7 +53,7 @@ adt where <symbol> --fmt slim
 adt files src/ --sort size --limit 10
 ```
 
-### Instead of `sed` / file editing
+### ✏️ Instead of `sed` / file editing
 
 ```bash
 # Always verify before patching
@@ -58,15 +62,14 @@ adt patch <file> --replace N:M --with "<new content>" --dry-run --fmt normal
 adt patch <file> --replace N:M --with "<new content>" --fmt slim
 ```
 
-### Instead of `git`
+### 🐙 Instead of `git`
 
 ```bash
-adt git status --fmt slim
-adt git log --limit 10 --fmt slim
-adt git diff --staged --fmt normal
-adt git add <path> --fmt slim
-adt git commit --message "<message>" --fmt slim
-adt git push --fmt slim
+adt git-status --fmt slim
+adt git-log --limit 10 --fmt slim
+adt git-diff --staged --fmt normal
+adt git-commit --message "<message>" --fmt slim
+adt git-push --fmt slim
 ```
 
 ## Format Rule
@@ -75,7 +78,7 @@ adt git push --fmt slim
 - `--fmt normal` → reading file content, analysis output
 - `--fmt json` → only when processing output programmatically
 
-## Quality & Analysis (v2.0)
+## 📊 Quality & Analysis (v2.0)
 
 ```bash
 # Project health
@@ -95,6 +98,90 @@ adt lint src/ --fmt slim
 adt typecheck src/ --fmt slim
 adt test --fmt slim
 adt test <file> --coverage
+```
+
+## 🌐 API & Architecture (v2.0)
+
+```bash
+# API endpoints
+adt api-list [path]
+adt api-find "<pattern>" [path]
+adt api-routes [path]
+
+# Architecture rules
+adt arch-rules list
+adt arch-check [path]
+adt arch-rule-add <spec>
+```
+
+## 🔒 Security & Testing (v2.0)
+
+```bash
+# Security
+adt security [path] --severity high
+adt risk [path] --threshold high
+adt contract-check <class> [path]
+
+# Testing
+adt coverage-report [path]
+```
+
+## 🧪 Code Generation (v2.0)
+
+```bash
+adt generate-service <name>
+adt generate-model <name>
+adt generate-test <name>
+```
+
+## 🔄 Integration & Migration (v2.0)
+
+```bash
+adt integration-list [path]
+adt migrate-scan <package> [path]
+adt flow-trace <symbol> [path]
+```
+
+## 📝 Documentation (v2.0)
+
+```bash
+adt changelog --version 2.0.0
+adt toc <file>
+adt split <file> --lines 400
+adt doc coverage <file>
+```
+
+## 🗂️ Workspace & Configuration (v2.0)
+
+```bash
+adt workspace-list [path]
+adt config-flags [path]
+adt history-file <file>
+```
+
+## 📋 Task & Session Management (v2.0)
+
+```bash
+# Tasks
+adt task create "<title>"
+adt task list --status open
+adt task step add <id> "<step>"
+
+# Sessions
+adt session show
+adt session diff
+adt session undo
+adt session checkpoint save "<msg>"
+adt session restore <id>
+```
+
+## 🎨 Patterns & Tags (v2.0)
+
+```bash
+adt pattern match "<regex>" [path]
+adt pattern save "<name>" --template <file>
+adt tag add "<note>" <file> --line N
+adt tag list --sort recent
 ```
 
 ## Typical Workflow
@@ -119,15 +206,7 @@ adt batch --file plan.txt --parallel
 
 # Review before commit
 adt smart review
-adt git diff --staged
-```
-
-## Documentation
-
-```bash
-adt changelog --version 2.0.0
-adt toc <file>
-adt split <file> --lines 400
+adt git-diff --staged
 ```
 
 ## Best Practices
@@ -138,3 +217,4 @@ adt split <file> --lines 400
 4. Always verify before patching
 5. Use `adt smart review` before commits
 6. Check `adt health` regularly
+7. Leverage v2.0 features: API, architecture, security, generation

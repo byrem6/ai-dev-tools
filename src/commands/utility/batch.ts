@@ -9,6 +9,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export class BatchCommand extends Command {
+  public getDescription(): string {
+    return 'Batch command execution';
+  }
+
   private batchResults: any[] = [];
 
   async execute(...args: string[]): Promise<CommandResult> {

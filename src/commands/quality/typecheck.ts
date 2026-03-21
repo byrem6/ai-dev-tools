@@ -6,6 +6,10 @@ import { createError } from '../../core/error';
 import { execSync } from 'child_process';
 
 export class TypecheckCommand extends Command {
+  public getDescription(): string {
+    return 'Type checking';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

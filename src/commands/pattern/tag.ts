@@ -17,6 +17,10 @@ interface Tag {
 }
 
 export class TagCommand extends Command {
+  public getDescription(): string {
+    return 'Tag and annotate code';
+  }
+
   private tagsFile = path.join(process.cwd(), '.adt', 'tags.json');
 
   async execute(...args: string[]): Promise<CommandResult> {

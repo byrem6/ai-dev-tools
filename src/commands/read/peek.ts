@@ -34,13 +34,17 @@ export class PeekCommand extends Command {
     let skeleton: any[] = [];
 
     if (['ts', 'tsx', 'js', 'jsx'].includes(ext)) {
-      const parser = new ASTParser(content);
-      if (parser.isValid()) {
-        const importList = parser.extractImports();
-        imports = importList.map(imp => imp.source);
+      try {
+        const parser = new ASTParser(content);
+        if (parser.isValid()) {
+          const importList = parser.extractImports();
+          imports = importList.map(imp => imp.source);
 
-        const symbols = parser.extractSymbols();
-        skeleton = this.buildSkeleton(symbols);
+          const symbols = parser.extractSymbols();
+          skeleton = this.buildSkeleton(symbols);
+        }
+      } catch (error) {
+        // If parsing fails, continue without skeleton
       }
     }
 
@@ -58,6 +62,7 @@ export class PeekCommand extends Command {
       language,
       imports,
       skeleton,
+      firstLines,
     };
   }
 
@@ -105,41 +110,106 @@ export class PeekCommand extends Command {
     skeleton: any[],
     firstLines: string[]
   ): string {
-    const lines: string[] = [];
+    const fmt = this.formatManager.getFormat();
 
-    lines.push(`${language}  ${info.totalLines} lines  ${info.sizeHuman}  ${info.encoding} ${info.lineEnding}`);
-    
-    if (imports.length > 0) {
-      lines.push(`imports: ${imports.join('  ')}`);
-    }
-
-    skeleton.forEach(item => {
-      if (item.type === 'class') {
-        let line = `class ${item.name} :${item.line}–${item.end}`;
-        lines.push(line);
-
-        if (item.members) {
-          item.members.forEach((member: any) => {
-            let memberLine = '  ';
-            if (member.type === 'method') {
-              memberLine += `method ${member.name} :${member.line}`;
+    if (fmt === 'slim') {
+      const lines: string[] = [];
+      lines.push(`${language}  ${info.totalLines} lines  ${info.sizeHuman}`);
+      if (imports.length > 0) {
+        lines.push(`imports: ${imports.join('  ')}`);
+      }
+      skeleton.forEach(item => {
+        if (item.type === 'class') {
+          lines.push(`class ${item.name} :${item.line}–${item.end}`);
+          if (item.members) {
+            item.members.forEach((member: any) => {
+              let memberLine = `  ${member.type === 'method' ? 'method' : 'prop'} ${member.name} :${member.line}`;
               if (member.end) memberLine += `–${member.end}`;
               if (member.async) memberLine += ' async';
-            } else if (member.type === 'property') {
-              memberLine += `property ${member.name} :${member.line}`;
-            }
-            lines.push(memberLine);
-          });
+              lines.push(memberLine);
+            });
+          }
+        } else if (item.type === 'function') {
+          let line = `function ${item.name} :${item.line}`;
+          if (item.end) line += `–${item.end}`;
+          if (item.async) line += ' async';
+          lines.push(line);
         }
-      } else if (item.type === 'function') {
-        let line = `function ${item.name} :${item.line}`;
-        if (item.end) line += `–${item.end}`;
-        if (item.async) line += ' async';
-        lines.push(line);
-      }
-    });
+      });
+      return lines.join('\n');
+    } else if (fmt === 'json') {
+      return JSON.stringify({
+        ok: true,
+        command: 'peek',
+        file: info.path,
+        type: language,
+        size: info.sizeHuman,
+        totalLines: info.totalLines,
+        encoding: info.encoding,
+        lineEnding: info.lineEnding,
+        hasBOM: info.hasBOM,
+        isBinary: info.binary,
+        imports,
+        skeleton,
+        firstLines,
+      }, null, 2);
+    } else {
+      const lines: string[] = [];
+      lines.push(`ok: true`);
+      lines.push(`file: ${info.path}`);
+      lines.push(`type: ${language}  size: ${info.sizeHuman}  lines: ${info.totalLines}`);
+      lines.push(`encoding: ${info.encoding}  lineEnding: ${info.lineEnding}  binary: ${info.binary}`);
+      lines.push('---');
 
-    return lines.join('\n');
+      if (imports.length > 0) {
+        lines.push(`imports (${imports.length}):`);
+        imports.slice(0, 10).forEach((imp, i) => {
+          lines.push(`  ${i + 1}: ${imp}`);
+        });
+        if (imports.length > 10) {
+          lines.push(`  ... and ${imports.length - 10} more`);
+        }
+        lines.push('---');
+      }
+
+      if (skeleton.length > 0) {
+        lines.push('skeleton:');
+        skeleton.forEach(item => {
+          if (item.type === 'class') {
+            let line = `  class ${item.name}                 :${item.line}–${item.end}`;
+            lines.push(line);
+
+            if (item.members) {
+              item.members.forEach((member: any) => {
+                let memberLine = '    ';
+                if (member.type === 'method') {
+                  memberLine += `method ${member.name}`;
+                  if (member.async) memberLine += '        async';
+                  memberLine += ` :${member.line}`;
+                  if (member.end) memberLine += `–${member.end}`;
+                } else if (member.type === 'property') {
+                  memberLine += `property ${member.name}              :${member.line}`;
+                }
+                lines.push(memberLine);
+              });
+            }
+          } else if (item.type === 'function') {
+            let line = `  function ${item.name} :${item.line}`;
+            if (item.end) line += `–${item.end}`;
+            if (item.async) line += '  async';
+            lines.push(line);
+          }
+        });
+        lines.push('---');
+      }
+
+      if (firstLines.length > 0) {
+        lines.push('first-lines:');
+        firstLines.forEach(line => lines.push(line));
+      }
+
+      return lines.join('\n');
+    }
   }
 
   private parseArgs(args: string[]): {

@@ -9,6 +9,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export class AICommand extends Command {
+  public getDescription(): string {
+    return 'AI-powered code analysis';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'slim');

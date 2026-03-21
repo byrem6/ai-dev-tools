@@ -9,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/node/v/@byrem6/ai-dev-tools.svg)](https://nodejs.org)
 
-**5-7× less token usage than JSON • 60+ commands • Cross-platform**
+**5-7× less token usage than JSON • 94 commands • Cross-platform**
 
 [Features](#-features) • [Quick Start](#-quick-start) • [Commands](#-commands) • [Examples](#-usage-examples) • [API](#-api)
 
@@ -45,7 +45,7 @@
 - **Change review** before commits
 
 ### ⚡ Powerful Operations
-- **60+ commands** across 12 categories
+- **94 commands** across 27 categories
 - **Command chaining** with pipe operator
 - **Parallel batch execution**
 - **Cross-platform** (Windows, Linux, macOS)
@@ -371,30 +371,57 @@ adt split <file> --chapters
 adt doc generate --all
 ```
 
-### 🌐 Other Commands
+### 🌐 Additional Commands
 
 ```bash
-# Session management
-adt session --diff
-adt session --undo
+# API Endpoints
+adt api-list [path]                    # List all API endpoints
+adt api-find "<pattern>" [path]        # Find endpoints by pattern
+adt api-routes [path]                  # Show routing details
 
-# Platform info
-adt platform --fmt slim
+# Architecture Rules
+adt arch-rules list                    # List architecture rules
+adt arch-check [path]                  # Check rule compliance
+adt arch-rule-add <spec>               # Add new rule
 
-# Environment variables
-adt env --filter NODE*
+# Code Patterns
+adt pattern match "<regex>" [path]     # Match code patterns
+adt tag add "<note>" <file>            # Tag code locations
 
-# Pattern matching
-adt pattern "<regex>" [path]
+# Security & Risk
+adt security [path] --severity high    # Security vulnerability scan
+adt risk [path] --threshold high       # Risk analysis
+adt contract-check <class> [path]      # Interface contract check
 
-# Tag management
-adt tag list --sort recent
+# Testing & Coverage
+adt coverage-report [path]             # Test coverage report
 
-# Security scan
-adt security [path]
+# Code Generation
+adt generate-service <name>            # Generate service class
+adt generate-model <name>              # Generate model/interface
+adt generate-test <name>               # Generate test file
 
-# Risk analysis
-adt risk [path] --threshold high
+# Integrations & Migration
+adt integration-list [path]            # List external APIs
+adt migrate-scan <package> [path]      # Scan deprecated APIs
+
+# Data Flow & History
+adt flow-trace <symbol> [path]         # Trace data flow
+adt history-file <file>                # File git history
+
+# Workspace & Configuration
+adt workspace-list [path]              # List monorepo packages
+adt config-flags [path]                # List feature flags
+
+# Documentation
+adt doc coverage <file>                # Check docs coverage
+adt split <file> --lines 400           # Split large docs
+adt toc <file>                         # Generate TOC
+
+# Task & Session Management
+adt task create "<title>"              # Create task
+adt session show                       # Show session state
+adt resume                             # Resume last session
 ```
 
 ---
@@ -403,17 +430,33 @@ adt risk [path] --threshold high
 
 | Category | Commands | Description |
 |----------|----------|-------------|
-| **READ** | read, peek, outline, cat, head, tail | Smart file reading |
+| **READ** | read, peek, outline | Smart file reading |
 | **SEARCH** | grep, find, where, search, refs | Pattern search & discovery |
 | **SYMBOL** | symbols, sig, def, body, callers, callees | Symbol navigation |
 | **EDIT** | verify, patch, replace, create, delete, move, copy, rename | Safe editing operations |
 | **MAP** | map, tree, stats, deps, impact | Project structure & analysis |
-| **GIT** | status, log, diff, blame, branch, commit, stash, reset, merge, tag | Git operations |
+| **GIT** | git-status, git-log, git-diff, git-blame, git-branch, git-commit, git-stash, git-reset, git-merge, git-tag, git-cherry-pick | Git operations |
 | **SHELL** | exec, platform, run, env, which | Shell & system commands |
 | **QUALITY** | lint, test, typecheck, format | Code quality checks |
-| **AI** | ai, smart, context | AI-powered features |
-| **BATCH** | batch | Automation & chaining |
-| **UTILITY** | info, files, recent, duplicate, unused, health, changelog, safe, quick | Developer utilities |
+| **AI** | ai, smart, quick, batch | AI-powered features |
+| **CONTEXT** | context | Decision tracking |
+| **UTILITY** | info, files, recent, duplicate, unused, health, changelog, safe | Developer utilities |
+| **DOCUMENTATION** | doc, split, toc | Documentation tools |
+| **ARCHITECTURE** | arch-rules, arch-check, arch-rule-add | Architecture rules |
+| **PATTERN** | pattern, tag | Code patterns |
+| **SECURITY** | security, risk | Security analysis |
+| **TESTING** | coverage-report | Test coverage |
+| **GENERATION** | generate-service, generate-model, generate-test | Code generation |
+| **API** | api-list, api-find, api-routes | API endpoints |
+| **INTEGRATION** | integration-list | External integrations |
+| **MIGRATION** | migrate-scan | Migration tools |
+| **FLOW** | flow-trace | Data flow |
+| **CONTRACT** | contract-check | Interface contracts |
+| **CONFIGURATION** | config-flags | Configuration |
+| **WORKSPACE** | workspace-list | Monorepo workspace |
+| **HISTORY** | history-file | File history |
+| **SESSION** | session, resume | Session management |
+| **TASK** | task | Task management |
 | **SYSTEM** | init, doctor | System setup & diagnostics |
 
 ---
@@ -658,6 +701,9 @@ Generated configs:
 
 ## 📚 Documentation
 
+- **Full Command Reference**: See `src/templates/commands/COMMANDS.md` (94 commands documented)
+- **Quick Start Guide**: See `src/templates/commands/QUICKSTART.md`
+- **Examples**: See `src/templates/commands/EXAMPLES.md`
 - **Full Design Spec**: [README_DESIGN.md](./README_DESIGN.md)
 - **v2.0 Implementation**: [ADT_V2_FINAL_REPORT.md](./ADT_V2_FINAL_REPORT.md)
 - **Improvements Log**: [ADT_IMPROVEMENTS.md](./ADT_IMPROVEMENTS.md)
@@ -683,10 +729,11 @@ npm run validate
 ## 📝 Changelog
 
 ### v2.0.0 (Latest)
-- ✨ New `smart` command with AI-powered suggestions
-- ✨ Enhanced `context` command with history and search
-- ✨ Command chaining and parallel batch execution
-- 🐛 Fixed complexity command for directory paths
+- ✨ 94 commands across 27 categories
+- ✨ All commands now documented in templates
+- ✨ Enhanced descriptions for all commands
+- ✨ API, Architecture, Security, and more categories
+- ✨ Complete command reference in templates
 - ⚡ 5-7× token efficiency improvements
 - 📚 Comprehensive documentation
 

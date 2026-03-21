@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { glob } from 'glob';
 import { FileInfo } from '../types';
 
 export class FileUtils {
@@ -184,5 +185,18 @@ export class FileUtils {
     };
 
     return langMap[ext.toLowerCase()] || 'Unknown';
+  }
+
+  static findFiles(targetPath: string, pattern: string): string[] {
+    try {
+      const files = glob.sync(pattern, {
+        cwd: targetPath,
+        absolute: true,
+        nodir: true,
+      });
+      return files;
+    } catch (error) {
+      return [];
+    }
   }
 }

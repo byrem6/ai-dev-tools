@@ -58,7 +58,8 @@ export class SessionManager {
     try {
       fs.appendFileSync(this.eventsFile, JSON.stringify(event) + '\n');
     } catch (error) {
-      console.error('Failed to write event:', error);
+      const logger = require('../utils/logger').Logger.getInstance();
+      logger.error('Failed to write event:', error);
     }
 
     this.saveSession();
@@ -72,7 +73,8 @@ export class SessionManager {
     try {
       fs.writeFileSync(sessionFile, JSON.stringify(this.session, null, 2));
     } catch (error) {
-      console.error('Failed to save session:', error);
+      const logger = require('../utils/logger').Logger.getInstance();
+      logger.error('Failed to save session:', error);
     }
   }
 
@@ -127,7 +129,8 @@ export class SessionManager {
         }
       }
     } catch (error) {
-      console.error('Failed to cleanup old sessions:', error);
+      const logger = require('../utils/logger').Logger.getInstance();
+      logger.error('Failed to cleanup old sessions:', error);
     }
   }
 }

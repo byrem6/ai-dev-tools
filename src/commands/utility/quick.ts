@@ -8,6 +8,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export class QuickCommand extends Command {
+  public getDescription(): string {
+    return 'Quick project analysis';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'slim');

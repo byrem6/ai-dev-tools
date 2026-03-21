@@ -16,6 +16,10 @@ interface Suggestion {
 }
 
 export class SmartCommand extends Command {
+  public getDescription(): string {
+    return 'Smart suggestions';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

@@ -21,6 +21,10 @@ interface Template {
 }
 
 export class PatternCommand extends Command {
+  public getDescription(): string {
+    return 'Code pattern matching';
+  }
+
   private templatesDir = path.join(process.cwd(), '.adt', 'templates');
 
   async execute(...args: string[]): Promise<CommandResult> {

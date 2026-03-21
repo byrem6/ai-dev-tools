@@ -6,6 +6,10 @@ import { createError } from '../../core/error';
 import * as fg from 'fast-glob';
 
 export class SearchCommand extends Command {
+  public getDescription(): string {
+    return 'Multi-pattern search';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

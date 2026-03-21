@@ -6,6 +6,10 @@ import { createError } from '../../core/error';
 import { execSync } from 'child_process';
 
 export class FormatCommand extends Command {
+  public getDescription(): string {
+    return 'Format code';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

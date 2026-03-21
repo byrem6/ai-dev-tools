@@ -18,6 +18,10 @@ interface ChangelogEntry {
 }
 
 export class ChangelogCommand extends Command {
+  public getDescription(): string {
+    return 'Generate changelog';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

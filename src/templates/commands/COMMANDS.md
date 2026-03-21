@@ -1,7 +1,7 @@
 # AI Dev Tools (adt) - Complete Command Reference
 
 Version: 2.0.0
-Total Commands: 60+
+Total Commands: 94
 Categories: 12
 
 ## QUICK REFERENCE
@@ -22,7 +22,7 @@ Categories: 12
 
 ### 1. READ - File Reading & Navigation
 
-Commands: read, peek, outline, cat, head, tail
+Commands: read, peek, outline
 
 #### read
 Description: Smart file reader with multiple modes
@@ -346,7 +346,7 @@ Examples:
 
 ### 6. GIT - Git Operations
 
-Commands: status, log, diff, blame, branch, commit, stash, reset, merge, tag
+Commands: git-status, git-log, git-diff, git-blame, git-branch, git-commit, git-stash, git-reset, git-merge, git-tag, git-cherry-pick
 
 #### git-status
 Description: Git working tree status
@@ -442,6 +442,14 @@ Examples:
   adt git tag list
   adt git tag create v2.0.0
   adt git tag delete v1.0.0
+
+#### git-cherry-pick
+Description: Cherry-pick commits
+Usage: adt git cherry-pick <commit-hash>
+
+Examples:
+  adt git cherry-pick abc123
+  adt git cherry-pick def456 --no-commit
 
 ---
 
@@ -544,9 +552,20 @@ Examples:
 
 ---
 
-### 9. AI - AI-Powered Features (NEW!)
+### 9. AI - AI-Powered Features
 
-Commands: ai, smart, context
+Commands: ai, smart, context, quick, batch
+
+#### ai
+Description: General AI assistance
+Usage: adt ai [options]
+Options:
+  --goal <desc>       Goal description
+  --path <dir>        Target directory
+
+Examples:
+  adt ai --goal "refactor auth system"
+  adt ai --path src/
 
 #### smart
 Description: AI-powered code analysis and suggestions
@@ -572,15 +591,17 @@ Examples:
   adt context search --query "TypeScript"
   adt context clear
 
-#### ai
-Description: General AI assistance
-Usage: adt ai [options]
+#### quick
+Description: Quick operations and analysis
+Usage: adt quick <action> [options]
+Options:
+  --query <text>      Search query
+  --path <dir>        Target path
 
----
-
-### 10. BATCH - Automation & Chaining
-
-Commands: batch
+Examples:
+  adt quick analyze
+  adt quick search "UserService"
+  adt quick overview --path src/
 
 #### batch
 Description: Execute multiple commands
@@ -606,9 +627,9 @@ Batch file format:
 
 ---
 
-### 11. UTILITY - Developer Utilities
+### 10. UTILITY - Developer Utilities
 
-Commands: info, files, recent, duplicate, unused, health, changelog, safe, quick
+Commands: info, files, recent, duplicate, unused, health, changelog, safe
 
 #### info
 Description: File/directory information
@@ -698,13 +719,353 @@ Examples:
   adt safe check src/
   adt safe verify src/app.ts
 
-#### quick
-Description: Quick operations
-Usage: adt quick <action> [options]
+---
+
+### 11. DOCUMENTATION - Documentation Tools
+
+Commands: doc, split, toc
+
+#### doc
+Description: Documentation analysis and generation
+Usage: adt doc <action> [options]
+Actions: coverage, stale, generate
+
+Examples:
+  adt doc coverage src/
+  adt doc stale README.md --days 30
+  adt doc generate --all
+
+#### split
+Description: Split large documentation files
+Usage: adt split <file> [options]
+Options:
+  --lines N           Lines per split (default: 400)
+  --dry-run           Show splits without applying
+
+Examples:
+  adt split README.md --lines 500
+  adt split docs/guide.md --dry-run
+
+#### toc
+Description: Generate table of contents
+Usage: adt toc <file> [options]
+Options:
+  --max-level N       Maximum heading level (default: 3)
+
+Examples:
+  adt toc README.md
+  adt toc docs/guide.md --max-level 2
 
 ---
 
-### 12. SYSTEM - System & Diagnostics
+### 12. ARCHITECTURE - Architecture Rules
+
+Commands: arch-rules, arch-check, arch-rule-add
+
+#### arch-rules
+Description: Manage architecture rules
+Usage: adt arch rules <action> [options]
+Actions: list, add, remove, export
+
+Examples:
+  adt arch rules list
+  adt arch rules export rules.json
+
+#### arch-check
+Description: Check architecture rule compliance
+Usage: adt arch check [path] [options]
+
+Examples:
+  adt arch check src/
+  adt arch check src/ --fail-on-violation
+
+#### arch-rule-add
+Description: Add new architecture rule
+Usage: adt arch rule add <rule-spec>
+Options:
+  --type <type>       Rule type: must-not-import, can-only-import, must-have-test
+
+Examples:
+  adt arch rule add "src/**" --type must-not-import --target "src/**/test/**"
+  adt arch rule add "services/**" --type must-have-test
+
+---
+
+### 13. PATTERN - Code Patterns
+
+Commands: pattern, tag
+
+#### pattern
+Description: Code pattern matching and templates
+Usage: adt pattern <action> [options]
+Actions: match, template, save, list
+
+Examples:
+  adt pattern match "class.*Service" src/
+  adt pattern save "react-component" --template <file>
+  adt pattern list
+
+#### tag
+Description: Tag and annotate code
+Usage: adt tag <action> [options]
+Actions: add, list, search, remove
+
+Examples:
+  adt tag add "TODO" src/auth.ts --line 45
+  adt tag list --sort recent
+  adt tag search "TODO"
+
+---
+
+### 14. SECURITY - Security Analysis
+
+Commands: security, risk
+
+#### security
+Description: Security vulnerability scan
+Usage: adt security [path] [options]
+Options:
+  --severity level    Minimum severity (low, medium, high, critical)
+
+Examples:
+  adt security src/
+  adt security src/ --severity high
+
+#### risk
+Description: Code risk analysis
+Usage: adt risk [path] [options]
+Options:
+  --threshold level   Risk threshold (low, medium, high)
+
+Examples:
+  adt risk src/
+  adt risk src/ --threshold high
+
+---
+
+### 15. TESTING - Test Coverage
+
+Commands: coverage-report
+
+#### coverage-report
+Description: Generate test coverage report
+Usage: adt coverage report [path] [options]
+
+Examples:
+  adt coverage report src/
+  adt coverage report --format json
+
+---
+
+### 16. GENERATION - Code Generation
+
+Commands: generate-service, generate-model, generate-test
+
+#### generate-service
+Description: Generate service class template
+Usage: adt generate service <name> [options]
+Options:
+  --extends <base>    Base class to extend
+  --implements <iface> Interface to implement
+
+Examples:
+  adt generate service PaymentService
+  adt generate service UserService --extends BaseService
+  adt generate service AuthService --implements IAuthService
+
+#### generate-model
+Description: Generate model/interface template
+Usage: adt generate model <name> [options]
+Options:
+  --fields <spec>     Field specifications
+
+Examples:
+  adt generate model User --fields "name:string,age:number"
+  adt generate model Order --fields "id:string,total:number"
+
+#### generate-test
+Description: Generate test file template
+Usage: adt generate test <name> [options]
+
+Examples:
+  adt generate test UserService
+  adt generate test PaymentService --dry-run
+
+---
+
+### 17. API - API Endpoints
+
+Commands: api-list, api-find, api-routes
+
+#### api-list
+Description: List all HTTP API endpoints
+Usage: adt api list [path] [options]
+
+Examples:
+  adt api list src/
+  adt api list src/ --fmt slim
+
+#### api-find
+Description: Find API endpoints by pattern
+Usage: adt api find "<pattern>" [path]
+
+Examples:
+  adt api find "user" src/
+  adt api find "payment" --fmt slim
+
+#### api-routes
+Description: Show detailed routing information
+Usage: adt api routes [path] [options]
+
+Examples:
+  adt api routes src/
+  adt api routes src/controllers/
+
+---
+
+### 18. INTEGRATION - External Integrations
+
+Commands: integration-list
+
+#### integration-list
+Description: List external API integrations
+Usage: adt integration list [path] [options]
+
+Examples:
+  adt integration list src/
+  adt integration list --fmt slim
+
+---
+
+### 19. MIGRATION - Migration Tools
+
+Commands: migrate-scan
+
+#### migrate-scan
+Description: Scan for deprecated API usage
+Usage: adt migrate scan <package> [path]
+
+Examples:
+  adt migrate scan express src/
+  adt migrate scan lodash --fmt slim
+
+---
+
+### 20. FLOW - Data Flow
+
+Commands: flow-trace
+
+#### flow-trace
+Description: Trace data flow through code
+Usage: adt flow trace <symbol> [path]
+
+Examples:
+  adt flow trace userId src/
+  adt flow trace requestData src/services/
+
+---
+
+### 21. CONTRACT - Interface Contracts
+
+Commands: contract-check
+
+#### contract-check
+Description: Check interface implementation
+Usage: adt contract check <class> [path]
+
+Examples:
+  adt contract check UserService src/
+  adt contract check PaymentController
+
+---
+
+### 22. CONFIGURATION - Configuration
+
+Commands: config-flags
+
+#### config-flags
+Description: List feature flags
+Usage: adt config flags [path]
+
+Examples:
+  adt config flags src/
+  adt config flags --fmt slim
+
+---
+
+### 23. WORKSPACE - Monorepo Workspace
+
+Commands: workspace-list
+
+#### workspace-list
+Description: List workspace packages
+Usage: adt workspace list [path]
+
+Examples:
+  adt workspace list
+  adt workspace list packages/
+
+---
+
+### 24. HISTORY - File History
+
+Commands: history-file
+
+#### history-file
+Description: Show file git history and churn
+Usage: adt history file <file>
+
+Examples:
+  adt history file src/index.ts
+  adt history file src/services/UserService.ts
+
+---
+
+### 25. SESSION - Session Management
+
+Commands: session, resume
+
+#### session
+Description: Session management
+Usage: adt session <action> [options]
+Actions: show, diff, undo, checkpoint, restore, list, clear
+
+Examples:
+  adt session show
+  adt session diff
+  adt session undo
+  adt session checkpoint save "before refactor"
+  adt session restore <checkpoint-id>
+  adt session list
+
+#### resume
+Description: Resume last session
+Usage: adt resume [options]
+
+Examples:
+  adt resume
+  adt resume --fmt normal
+
+---
+
+### 26. TASK - Task Management
+
+Commands: task
+
+#### task
+Description: Manage development tasks
+Usage: adt task <action> [options]
+Actions: create, list, status, step
+
+Examples:
+  adt task create "Refactor payment module"
+  adt task list --status open
+  adt task step add T1 "Create interface"
+  adt task status
+
+---
+
+### 27. SYSTEM - System & Diagnostics
 
 Commands: init, doctor
 

@@ -22,6 +22,10 @@ interface CategoryResult {
 }
 
 export class DoctorCommand extends Command {
+  public getDescription(): string {
+    return 'Diagnostics and troubleshooting';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

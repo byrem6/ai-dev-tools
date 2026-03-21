@@ -7,6 +7,10 @@ import { createError } from '../../core/error';
 import { execSync } from 'child_process';
 
 export class ExecCommand extends Command {
+  public getDescription(): string {
+    return 'Execute shell command';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

@@ -5,6 +5,10 @@ import { GitUtils } from '../../utils/git';
 import { createError } from '../../core/error';
 
 export class GitStashCommand extends Command {
+  public getDescription(): string {
+    return 'Git stash management';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

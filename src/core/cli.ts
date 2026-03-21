@@ -65,7 +65,17 @@ export class CLI {
       return this.showHelp();
     }
 
+    // Check for --help in command args
+    if (commandArgs.includes('--help') || commandArgs.includes('-h')) {
+      return this.getCommandHelp(command);
+    }
+
     const result = await command.execute(...commandArgs);
+    return this.formatManager.output(result);
+  }
+
+  private getCommandHelp(command: Command): string {
+    const result = command.showHelp();
     return this.formatManager.output(result);
   }
 
@@ -99,7 +109,9 @@ export class CLI {
 
     const maxLen = Math.max(...sortedCommands.map(c => c.length));
     sortedCommands.forEach(cmd => {
-      helpLines.push(`  ${cmd.padEnd(maxLen)}  ${this.getCommandDescription(cmd)}`);
+      const command = this.getCommand(cmd);
+      const description = command?.getDescription() || this.getCommandDescription(cmd);
+      helpLines.push(`  ${cmd.padEnd(maxLen)}  ${description}`);
     });
 
     helpLines.push('', 'For more information:');

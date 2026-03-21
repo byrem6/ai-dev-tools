@@ -73,6 +73,24 @@ import { ContextCommand } from './commands/context/context';
 import { RiskCommand } from './commands/risk/risk';
 import { SecurityCommand } from './commands/security/security';
 import { ComplexityCommand } from './commands/complexity/complexity';
+import { ApiListCommand } from './commands/api/list';
+import { ApiFindCommand } from './commands/api/find';
+import { ApiRoutesCommand } from './commands/api/routes';
+import { GenerateServiceCommand } from './commands/generate/service';
+import { GenerateModelCommand } from './commands/generate/model';
+import { GenerateTestCommand } from './commands/generate/test';
+import { TaskCommand } from './commands/task/task';
+import { ArchRulesCommand } from './commands/arch/rules';
+import { ArchCheckCommand } from './commands/arch/check';
+import { ArchRuleAddCommand } from './commands/arch/rule-add';
+import { CoverageReportCommand } from './commands/coverage/report';
+import { HistoryFileCommand } from './commands/history/file';
+import { IntegrationListCommand } from './commands/integration/list';
+import { WorkspaceListCommand } from './commands/workspace/list';
+import { ConfigFlagsCommand } from './commands/config/flags';
+import { FlowTraceCommand } from './commands/flow/trace';
+import { ContractCheckCommand } from './commands/contract/check';
+import { MigrateScanCommand } from './commands/migrate/scan';
 import { FormatManager } from './core/format';
 import { ConfigManager } from './core/config';
 import { SessionManager } from './core/session';
@@ -190,14 +208,60 @@ async function main() {
   // COMPLEXITY Group
   cli.registerCommand('complexity', new ComplexityCommand(formatManager, configManager, sessionManager));
 
+  // API Group
+  cli.registerCommand('api-list', new ApiListCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('api-find', new ApiFindCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('api-routes', new ApiRoutesCommand(formatManager, configManager, sessionManager));
+
+  // GENERATE Group
+  cli.registerCommand('generate-service', new GenerateServiceCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('generate-model', new GenerateModelCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('generate-test', new GenerateTestCommand(formatManager, configManager, sessionManager));
+
+  // TASK Group
+  cli.registerCommand('task', new TaskCommand(formatManager, configManager, sessionManager));
+
+  // ARCH Group
+  cli.registerCommand('arch-rules', new ArchRulesCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('arch-check', new ArchCheckCommand(formatManager, configManager, sessionManager));
+  cli.registerCommand('arch-rule-add', new ArchRuleAddCommand(formatManager, configManager, sessionManager));
+
+  // COVERAGE Group
+  cli.registerCommand('coverage-report', new CoverageReportCommand(formatManager, configManager, sessionManager));
+
+  // HISTORY Group
+  cli.registerCommand('history-file', new HistoryFileCommand(formatManager, configManager, sessionManager));
+
+  // INTEGRATION Group
+  cli.registerCommand('integration-list', new IntegrationListCommand(formatManager, configManager, sessionManager));
+
+  // WORKSPACE Group
+  cli.registerCommand('workspace-list', new WorkspaceListCommand(formatManager, configManager, sessionManager));
+
+  // CONFIG Group
+  cli.registerCommand('config-flags', new ConfigFlagsCommand(formatManager, configManager, sessionManager));
+
+  // FLOW Group
+  cli.registerCommand('flow-trace', new FlowTraceCommand(formatManager, configManager, sessionManager));
+
+  // CONTRACT Group
+  cli.registerCommand('contract-check', new ContractCheckCommand(formatManager, configManager, sessionManager));
+
+  // MIGRATE Group
+  cli.registerCommand('migrate-scan', new MigrateScanCommand(formatManager, configManager, sessionManager));
+
   const args = process.argv.slice(2);
   const result = await cli.execute(args);
 
-  console.log(result);
+  // Always output result
+  if (result) {
+    console.log(result);
+  }
 }
 
 main().catch(error => {
-  console.error('Error:', error.message);
+  const logger = require('./utils/logger').Logger.getInstance();
+  logger.error('Error:', error.message);
   process.exit(1);
 });
 

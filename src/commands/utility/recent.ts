@@ -16,6 +16,10 @@ interface RecentFile {
 }
 
 export class RecentCommand extends Command {
+  public getDescription(): string {
+    return 'Recent files';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

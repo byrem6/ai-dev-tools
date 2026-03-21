@@ -20,6 +20,41 @@ export abstract class Command {
 
   abstract execute(...args: string[]): Promise<CommandResult>;
 
+  protected getCommandName(): string {
+    return this.constructor.name.replace('Command', '').toLowerCase();
+  }
+
+  public getDescription(): string {
+    return '';
+  }
+
+  public showHelp(options?: { usage?: string; description?: string; examples?: string[] }): CommandResult {
+    const commandName = this.getCommandName();
+    const usage = options?.usage || `adt ${commandName} [options]`;
+    const description = options?.description || this.getDescription() || `${commandName} command`;
+    const examples = options?.examples || [];
+
+    let content = `Usage: ${usage}\n\n`;
+    content += `Description: ${description}\n\n`;
+    content += `Options:\n`;
+    content += `  --fmt <format>  Output format (slim|normal|json) (default: normal)\n`;
+    content += `  --help         Show this help message`;
+
+    if (examples.length > 0) {
+      content += `\n\nExamples:\n`;
+      for (const example of examples) {
+        content += `  ${example}\n`;
+      }
+    }
+
+    return {
+      ok: true,
+      command: commandName,
+      tokenEstimate: this.estimateTokens(content),
+      content,
+    };
+  }
+
   protected async runWithLogging(
     commandName: string,
     args: string[],

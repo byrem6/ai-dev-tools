@@ -6,6 +6,10 @@ import * as path from 'path';
 import * as os from 'os';
 
 export class ResumeCommand extends Command {
+  public getDescription(): string {
+    return 'Resume last session';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

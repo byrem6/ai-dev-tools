@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} — AI Dev Tools Setup
 
-`adt` v{{ADT_VERSION}} is installed globally. Use it for ALL file, search, and git operations.
+`adt` v{{ADT_VERSION}} is installed globally with **94 commands across 27 categories**. Use it for ALL file, search, and git operations.
 
 ## Session Start
 
@@ -26,9 +26,7 @@ adt smart suggest
 - **Use AI features** - `smart` for suggestions, `context` for tracking decisions
 - **Batch operations** - Use `batch` for multiple commands
 
-## Command Reference
-
-### 🧠 AI-Powered Features (v2.0)
+## 🧠 AI-Powered Features (v2.0)
 
 ```bash
 # Smart suggestions based on codebase state
@@ -43,9 +41,17 @@ adt context history                  # View all past decisions
 adt context suggest                  # AI suggestions based on context
 adt context search --query "<term>"  # Search decisions
 adt context get                      # Get all context
+
+# Quick operations
+adt quick analyze                     # Quick codebase analysis
+adt quick search "<query>"            # Quick search
+
+# Batch operations
+adt batch --file <commands.txt> --parallel
+adt batch --commands "grep 'export' src/ | symbols src/index.ts"
 ```
 
-### Search & Navigation
+## 🔍 Search & Navigation
 
 ```bash
 adt where <symbol> --fmt slim                    # fastest: where is X?
@@ -56,7 +62,7 @@ adt refs <symbol> src/ --fmt slim                # all usages of a symbol
 adt search "<pattern>" [path] --fmt normal       # deep search with context
 ```
 
-### Reading Files
+## 📖 Reading Files
 
 ```bash
 adt info <file> --fmt slim                       # check size, encoding, binary?
@@ -67,7 +73,7 @@ adt read <file> --around N --context 15 --fmt normal # context around a line
 adt read <file> --fn <functionName> --fmt normal # read a function by name
 ```
 
-### Understanding Code
+## 🎯 Understanding Code
 
 ```bash
 adt sig <symbol> src/ --fmt slim                 # signature only (~12 tokens)
@@ -79,7 +85,7 @@ adt deps <file> --file --fmt normal              # what does this file import?
 adt impact <file> --symbol <name> --fmt normal   # what breaks if I change this?
 ```
 
-### Editing Files — ALWAYS Follow This Order
+## ✏️ Editing Files — ALWAYS Follow This Order
 
 ```bash
 # Step 1: confirm the target lines contain what you expect
@@ -95,27 +101,7 @@ adt patch <file> --replace N:M --with "<new content>" --fmt slim
 adt read <file> --around N --context 5 --fmt normal
 ```
 
-### ⚡ Batch Operations & Automation (v2.0)
-
-```bash
-# Execute multiple commands in parallel (token-efficient!)
-adt batch --file <commands.txt> --parallel
-
-# Inline command execution
-adt batch --commands "grep 'export' src/ | symbols src/index.ts"
-
-# Command chaining with pipe operator
-echo "grep 'UserService' src/ | complexity src/ | health" > analysis.txt
-adt batch --file analysis.txt --parallel
-
-# Example batch file:
-# grep "TODO" src/
-# grep "FIXME" src/
-# complexity src/
-# health
-```
-
-### 📊 Analysis & Quality (v2.0)
+## 📊 Analysis & Quality (v2.0)
 
 ```bash
 # Project health check
@@ -140,21 +126,72 @@ adt test <file> --coverage
 adt format src/ --check
 ```
 
-### Git
+## 🐙 Git Operations
 
 ```bash
-adt git status --fmt slim
-adt git log --limit 10 --fmt slim
-adt git diff --staged --fmt normal
-adt git add <path> --fmt slim
-adt git commit --message "<msg>" --fmt slim
-adt git push --fmt slim
-adt git pull --fmt slim
-adt git branch list --fmt slim
-adt git branch create <name> --fmt slim
+adt git-status --fmt slim
+adt git-log --limit 10 --fmt slim
+adt git-diff --staged --fmt normal
+adt git-commit --message "<msg>" --fmt slim
+adt git-push --fmt slim
+adt git-pull --fmt slim
+adt git-branch list --fmt slim
+adt git-branch create <name> --fmt slim
+
+# Advanced Git
+adt git-blame <file>                    # Who changed what
+adt git-stash save "<msg>"             # Stash changes
+adt git-reset soft HEAD~1              # Reset softly
+adt git-merge feature/branch           # Merge branches
+adt git-tag create v2.0.0              # Create tag
+adt git-cherry-pick abc123             # Cherry-pick commit
 ```
 
-### 📝 Documentation (v2.0)
+## 🌐 API Endpoints (v2.0)
+
+```bash
+adt api-list [path]                    # List all API endpoints
+adt api-find "<pattern>" [path]        # Find endpoints by pattern
+adt api-routes [path]                  # Show routing details
+```
+
+## 🏗️ Architecture Rules (v2.0)
+
+```bash
+adt arch-rules list                    # List architecture rules
+adt arch-check [path]                  # Check rule compliance
+adt arch-rule-add <spec>               # Add new rule
+```
+
+## 🔒 Security & Risk (v2.0)
+
+```bash
+adt security [path] --severity high    # Security vulnerability scan
+adt risk [path] --threshold high       # Risk analysis
+adt contract-check <class> [path]      # Interface contract check
+```
+
+## 🧪 Testing & Generation (v2.0)
+
+```bash
+# Testing
+adt coverage-report [path]             # Test coverage report
+
+# Code generation
+adt generate-service <name>            # Generate service class
+adt generate-model <name>              # Generate model/interface
+adt generate-test <name>               # Generate test file
+```
+
+## 🔄 Integration & Migration (v2.0)
+
+```bash
+adt integration-list [path]            # List external APIs
+adt migrate-scan <package> [path]      # Scan deprecated APIs
+adt flow-trace <symbol> [path]         # Trace data flow
+```
+
+## 📝 Documentation (v2.0)
 
 ```bash
 # Generate changelog from git history
@@ -164,6 +201,48 @@ adt changelog --version 2.0.0
 adt toc <file>                          # Generate table of contents
 adt split <file> --lines 400            # Split large files
 adt doc coverage <file>                 # Check documentation coverage
+```
+
+## 🗂️ Workspace & Configuration (v2.0)
+
+```bash
+adt workspace-list [path]              # List monorepo packages
+adt config-flags [path]                # List feature flags
+adt history-file <file>                # File git history
+```
+
+## 📋 Task & Session Management (v2.0)
+
+```bash
+# Task management
+adt task create "<title>"              # Create task
+adt task list --status open            # List tasks
+adt task step add <id> "<step>"        # Add step to task
+
+# Session management
+adt session show                       # Show session state
+adt session diff                       # Show session diff
+adt session undo                       # Undo last action
+adt session checkpoint save "<msg>"    # Save checkpoint
+adt session restore <id>               # Restore checkpoint
+```
+
+## 🎨 Patterns & Tags (v2.0)
+
+```bash
+adt pattern match "<regex>" [path]     # Match code patterns
+adt pattern save "<name>" --template <file>
+adt tag add "<note>" <file> --line N   # Tag code location
+adt tag list --sort recent             # List tags
+```
+
+## 🛡️ Safety & Diagnostics (v2.0)
+
+```bash
+adt safe check [path]                  # Safety checks
+adt doctor                              # System diagnostics
+adt doctor --verbose                    # Detailed diagnostics
+adt init                                # Initialize AI tool configs
 ```
 
 ## Typical AI Agent Workflow
@@ -198,17 +277,17 @@ adt batch --file refactor-plan.txt --parallel
 
 # 9. Review Before Commit
 adt smart review
-adt git diff --staged
+adt git-diff --staged
 
 # 10. Commit
-adt git commit --message "refactor: optimize UserService performance"
+adt git-commit --message "refactor: optimize UserService performance"
 ```
 
 ## Reading Strategy by File Size
 
 ```
 File size        Strategy
-────────────────────────────────────────────────────
+───────────────────────────────────────────────────
 < 200 lines      adt read <file> --fmt normal
 200–500 lines    adt peek --fmt slim  →  adt read --start N
 > 500 lines      adt outline --fmt slim  →  adt read --start N --end M
@@ -220,7 +299,7 @@ File size        Strategy
    - Location queries (`where`, `find`)
    - Symbol searches (`grep`, `refs`)
    - Boolean checks (`verify`)
-   - Status commands (`git status`, `health`)
+   - Status commands (`git-status`, `health`)
 
 2. **Use `--fmt normal` for:**
    - Reading file content
@@ -247,7 +326,7 @@ Every `adt` command outputs `ok true` or `ok false` as the first line. Always ch
 # - Common fixes:
 #   ENOENT → adt find <name> --fmt slim
 #   ECONFLICT → re-run adt outline to get correct line numbers
-#   EGIT → check adt git status --fmt slim first
+#   EGIT → check adt git-status --fmt slim first
 ```
 
 ## Advanced Features
@@ -283,8 +362,42 @@ adt rename <old> <new> --scope project       # Project-wide rename
 5. **Review before committing** - Use `smart review`
 6. **Check health regularly** - Run `adt health` periodically
 7. **Leverage AI planning** - Use `smart plan` for complex tasks
+8. **Use new v2.0 features** - API, architecture, security, generation commands
 
-## Quick Reference
+## Quick Reference (94 Commands)
+
+| Category | Commands |
+|----------|----------|
+| **READ** | read, peek, outline |
+| **SEARCH** | grep, find, where, search, refs |
+| **SYMBOL** | symbols, sig, def, body, callers, callees |
+| **EDIT** | verify, patch, replace, create, delete, move, copy, rename |
+| **MAP** | map, tree, stats, deps, impact |
+| **GIT** | git-status, git-log, git-diff, git-blame, git-branch, git-commit, git-stash, git-reset, git-merge, git-tag, git-cherry-pick |
+| **SHELL** | exec, platform, run, env, which |
+| **QUALITY** | lint, test, typecheck, format |
+| **AI** | ai, smart, quick, batch |
+| **CONTEXT** | context |
+| **UTILITY** | info, files, recent, duplicate, unused, health, changelog, safe |
+| **DOCUMENTATION** | doc, split, toc |
+| **ARCHITECTURE** | arch-rules, arch-check, arch-rule-add |
+| **PATTERN** | pattern, tag |
+| **SECURITY** | security, risk |
+| **TESTING** | coverage-report |
+| **GENERATION** | generate-service, generate-model, generate-test |
+| **API** | api-list, api-find, api-routes |
+| **INTEGRATION** | integration-list |
+| **MIGRATION** | migrate-scan |
+| **FLOW** | flow-trace |
+| **CONTRACT** | contract-check |
+| **CONFIGURATION** | config-flags |
+| **WORKSPACE** | workspace-list |
+| **HISTORY** | history-file |
+| **SESSION** | session, resume |
+| **TASK** | task |
+| **SYSTEM** | init, doctor |
+
+## Common Tasks
 
 | Task | Command |
 |------|---------|
@@ -297,3 +410,10 @@ adt rename <old> <new> --scope project       # Project-wide rename
 | Batch operations | `adt batch --file commands.txt --parallel` |
 | Health check | `adt health` |
 | Complexity | `adt complexity src/ --top 10` |
+| List API endpoints | `adt api-list src/` |
+| Check architecture | `adt arch-check src/` |
+| Security scan | `adt security src/` |
+| Generate service | `adt generate-service PaymentService` |
+| List integrations | `adt integration-list src/` |
+| Task management | `adt task create "Refactor X"` |
+| Session state | `adt session show` |

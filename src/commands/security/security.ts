@@ -16,6 +16,10 @@ interface SecurityIssue {
 }
 
 export class SecurityCommand extends Command {
+  public getDescription(): string {
+    return 'Security vulnerability scan';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

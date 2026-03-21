@@ -6,6 +6,10 @@ import { createError } from '../../core/error';
 import { execSync } from 'child_process';
 
 export class WhichCommand extends Command {
+  public getDescription(): string {
+    return 'Locate command paths';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

@@ -5,6 +5,10 @@ import { TokenUtils } from '../../utils/token';
 import { createError } from '../../core/error';
 
 export class EnvCommand extends Command {
+  public getDescription(): string {
+    return 'Environment variables';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

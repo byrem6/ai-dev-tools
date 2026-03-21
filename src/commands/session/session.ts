@@ -28,6 +28,10 @@ interface CheckpointData {
 }
 
 export class SessionCommand extends Command {
+  public getDescription(): string {
+    return 'Session management';
+  }
+
   private sessionFile: string;
   private eventsFile: string;
   private checkpointsDir: string;

@@ -6,6 +6,10 @@ import { TokenUtils } from '../../utils/token';
 import { createError } from '../../core/error';
 
 export class RunCommand extends Command {
+  public getDescription(): string {
+    return 'Run project scripts';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');

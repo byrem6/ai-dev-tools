@@ -1,6 +1,34 @@
-import { execSync } from 'child_process';
+import { execSync, ExecSyncOptions } from 'child_process';
+import * as path from 'path';
 
 export class GitUtils {
+  private static getGitCommand(): string {
+    const isWindows = process.platform === 'win32';
+    return isWindows ? 'git.exe' : 'git';
+  }
+
+  static exec(command: string, dir: string = process.cwd()): string {
+    try {
+      const fullCommand = `${this.getGitCommand()} ${command}`;
+
+      if (process.platform === 'win32') {
+        // Windows: Use shell for better compatibility
+        return execSync(`cmd /c "${fullCommand}"`, {
+          cwd: dir,
+          encoding: 'utf-8',
+        }) as string;
+      } else {
+        // Unix: Direct execution
+        return execSync(fullCommand, {
+          cwd: dir,
+          encoding: 'utf-8',
+        }) as string;
+      }
+    } catch (error) {
+      throw new Error(`Git command failed: ${command}`);
+    }
+  }
+
   static isGitRepository(dir: string = process.cwd()): boolean {
     try {
       execSync('git rev-parse --git-dir', {

@@ -7,6 +7,10 @@ import { execSync } from 'child_process';
 import * as path from 'path';
 
 export class TestCommand extends Command {
+  public getDescription(): string {
+    return 'Run tests';
+  }
+
   async execute(...args: string[]): Promise<CommandResult> {
     const options = this.parseArgs(args);
     this.setFormat(options.fmt || 'normal');
