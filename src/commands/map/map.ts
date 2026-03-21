@@ -67,7 +67,7 @@ export class MapCommand extends Command {
       onlyFiles: false,
       absolute: false,
       deep: 3,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const dirs: Set<string> = new Set();
@@ -172,7 +172,7 @@ export class MapCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const extCounts: Map<string, number> = new Map();
@@ -265,17 +265,17 @@ export class MapCommand extends Command {
   }
 
   private parseArgs(args: string[]): any {
-    const options: any = {
-      path: args[0],
-    };
+    const options: any = {};
 
-    for (let i = 1; i < args.length; i++) {
+    for (let i = 0; i < args.length; i++) {
       const arg = args[i];
       const nextArg = args[i + 1];
 
       if (arg === '--fmt' && nextArg) {
         options.fmt = nextArg;
         i++;
+      } else if (!arg.startsWith('--') && options.path === undefined) {
+        options.path = arg;
       }
     }
 

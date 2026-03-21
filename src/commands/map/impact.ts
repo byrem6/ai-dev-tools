@@ -78,7 +78,7 @@ export class ImpactCommand extends Command {
       cwd: searchPath,
       onlyFiles: true,
       absolute: true,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const symbolLower = symbolName.toLowerCase();
@@ -157,7 +157,7 @@ export class ImpactCommand extends Command {
       cwd: searchPath,
       onlyFiles: true,
       absolute: true,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     for (const file of files.slice(0, 100)) {

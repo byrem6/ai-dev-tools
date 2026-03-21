@@ -74,7 +74,7 @@ export class QuickCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     for (const file of files.slice(0, 100)) {
@@ -92,7 +92,7 @@ export class QuickCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     for (const file of tsFiles.slice(0, 50)) {
@@ -133,7 +133,7 @@ export class QuickCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const extCounts: Map<string, number> = new Map();
@@ -168,7 +168,7 @@ export class QuickCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     // Prioritize: package.json, index files, main files

@@ -232,10 +232,9 @@ export class GrepCommand extends Command {
   private parseArgs(args: string[]): any {
     const options: any = {
       pattern: args[0],
-      path: args[1],
     };
 
-    for (let i = 0; i < args.length; i++) {
+    for (let i = 1; i < args.length; i++) {
       const arg = args[i];
       const nextArg = args[i + 1];
 
@@ -272,6 +271,8 @@ export class GrepCommand extends Command {
       } else if (arg === '--fmt' && nextArg) {
         options.fmt = nextArg;
         i++;
+      } else if (!arg.startsWith('-') && options.path === undefined) {
+        options.path = arg;
       }
     }
 

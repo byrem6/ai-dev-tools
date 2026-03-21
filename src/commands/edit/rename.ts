@@ -112,7 +112,7 @@ export class RenameCommand extends Command {
       cwd: searchPath,
       onlyFiles: true,
       absolute: true,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const oldLower = oldName.toLowerCase();

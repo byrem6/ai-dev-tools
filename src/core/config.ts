@@ -76,6 +76,19 @@ export class ConfigManager {
     return this.config[key];
   }
 
+  /**
+   * Returns excludeByDefault as proper fast-glob patterns.
+   * Config stores simple names like 'node_modules'; this converts them to the form needed by fast-glob.
+   */
+  getExcludeGlobs(): string[] {
+    return this.config.excludeByDefault.map((name: string) => {
+      if (name.includes('*') || name.includes('/')) {
+        return name; // already a glob pattern
+      }
+      return `**/${name}/**`;
+    });
+  }
+
   set<K extends keyof Config>(key: K, value: Config[K]): void {
     this.config[key] = value;
     this.saveConfig();

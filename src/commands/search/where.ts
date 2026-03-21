@@ -61,7 +61,7 @@ export class WhereCommand extends Command {
       cwd: searchPath,
       onlyFiles: true,
       absolute: true,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const queryLower = query.toLowerCase();
@@ -79,13 +79,13 @@ export class WhereCommand extends Command {
       cwd: searchPath,
       onlyFiles: true,
       absolute: true,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const symbols: any[] = [];
     const queryLower = query.toLowerCase();
 
-    for (const file of files.slice(0, 50)) {
+    for (const file of files) {
       try {
         const content = FileUtils.readFile(file);
         
@@ -149,7 +149,6 @@ export class WhereCommand extends Command {
   private parseArgs(args: string[]): any {
     const options: any = {
       query: args[0],
-      path: args[1],
       type: 'both',
     };
 
@@ -165,6 +164,8 @@ export class WhereCommand extends Command {
       } else if (arg === '--fmt' && nextArg) {
         options.fmt = nextArg;
         i++;
+      } else if (!arg.startsWith('--') && options.path === undefined) {
+        options.path = arg;
       }
     }
 

@@ -59,7 +59,7 @@ export class DepsCommand extends Command {
         cwd: targetPath,
         onlyFiles: true,
         absolute: true,
-        ignore: this.configManager.get('excludeByDefault'),
+        ignore: this.configManager.getExcludeGlobs(),
       });
 
       for (const file of files.slice(0, 50)) {

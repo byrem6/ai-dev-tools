@@ -83,7 +83,7 @@ export class MoveCommand extends Command {
         cwd: process.cwd(),
         onlyFiles: true,
         absolute: true,
-        ignore: this.configManager.get('excludeByDefault'),
+        ignore: this.configManager.getExcludeGlobs(),
       });
 
       for (const file of files.slice(0, 100)) {

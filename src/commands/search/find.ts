@@ -123,18 +123,18 @@ export class FindCommand extends Command {
   private buildGlobPatterns(query: string, options: any): string[] {
     const patterns: string[] = [];
 
-    // If query contains wildcards, use it directly
-    if (query.includes('*') || query.includes('?')) {
+    // --name option takes priority over positional query
+    if (options.name) {
+      // Ensure recursive search: if no path separator, prefix with **/
+      const namePattern = options.name.includes('/') ? options.name : `**/${options.name}`;
+      patterns.push(namePattern);
+    } else if (query.includes('*') || query.includes('?')) {
+      // If query contains wildcards, use it directly
       patterns.push(query);
     } else {
-      // Name pattern matching
-      if (options.name) {
-        patterns.push(options.name);
-      } else {
-        // Search for files containing query in name
-        patterns.push(`*${query}*`);
-        patterns.push(`**/*${query}*`);
-      }
+      // Search for files containing query in name
+      patterns.push(`*${query}*`);
+      patterns.push(`**/*${query}*`);
     }
 
     // Extension filter

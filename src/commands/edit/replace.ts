@@ -43,7 +43,7 @@ export class ReplaceCommand extends Command {
       cwd: searchPath,
       onlyFiles: true,
       absolute: true,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const limit = options.limit || Infinity;

@@ -171,7 +171,7 @@ export class SmartCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const analysis = {

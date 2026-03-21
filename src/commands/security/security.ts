@@ -53,7 +53,7 @@ export class SecurityCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     for (const file of files) {
@@ -93,7 +93,7 @@ export class SecurityCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const secretPatterns = [

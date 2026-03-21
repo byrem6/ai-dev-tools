@@ -66,7 +66,7 @@ export class ComplexityCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     const metrics: ComplexityMetric[] = [];
@@ -117,7 +117,7 @@ export class ComplexityCommand extends Command {
       cwd: targetPath,
       onlyFiles: true,
       absolute: false,
-      ignore: this.configManager.get('excludeByDefault'),
+      ignore: this.configManager.getExcludeGlobs(),
     });
 
     let totalComplexity = 0;

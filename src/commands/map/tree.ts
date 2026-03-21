@@ -216,15 +216,13 @@ export class TreeCommand extends Command {
   }
 
   private parseArgs(args: string[]): any {
-    const options: any = {
-      path: args[0],
-    };
+    const options: any = {};
 
-    for (let i = 1; i < args.length; i++) {
+    for (let i = 0; i < args.length; i++) {
       const arg = args[i];
       const nextArg = args[i + 1];
 
-      if (arg === '-d' || arg === '--depth' && nextArg) {
+      if (arg === '-d' || (arg === '--depth' && nextArg)) {
         options.depth = parseInt(nextArg, 10);
         i++;
       } else if (arg === '--show-size') {
@@ -236,6 +234,8 @@ export class TreeCommand extends Command {
       } else if (arg === '--fmt' && nextArg) {
         options.fmt = nextArg;
         i++;
+      } else if (!arg.startsWith('--') && !arg.startsWith('-') && options.path === undefined) {
+        options.path = arg;
       }
     }
 

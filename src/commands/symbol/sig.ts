@@ -37,7 +37,7 @@ export class SigCommand extends Command {
         cwd: searchPath,
         onlyFiles: true,
         absolute: true,
-        ignore: this.configManager.get('excludeByDefault'),
+        ignore: this.configManager.getExcludeGlobs(),
       });
     } else {
       throw createError('ENOENT', searchPath);
@@ -183,7 +183,6 @@ export class SigCommand extends Command {
   private parseArgs(args: string[]): any {
     const options: any = {
       symbol: args[0],
-      path: args[1],
     };
 
     for (let i = 1; i < args.length; i++) {
@@ -195,6 +194,8 @@ export class SigCommand extends Command {
       } else if (arg === '--fmt' && nextArg) {
         options.fmt = nextArg;
         i++;
+      } else if (!arg.startsWith('--') && options.path === undefined) {
+        options.path = arg;
       }
     }
 
