@@ -35,10 +35,12 @@ export class GitCommitCommand extends Command {
   }
 
   private async createCommit(repoPath: string, options: any): Promise<CommandResult> {
-    const success = GitUtils.commit(repoPath, options.message, options.amend || false);
+    const result = GitUtils.commit(repoPath, options.message, options.amend || false);
+    const success = result?.ok === true;
     const branch = GitUtils.getCurrentBranch(repoPath) || 'main';
+    const hash = result?.commit?.hashShort || '';
     
-    const output = this.formatCommit(options.message, branch, success, options);
+    const output = this.formatCommit(options.message, branch, hash, success, options);
 
     return {
       ok: success,
@@ -47,27 +49,30 @@ export class GitCommitCommand extends Command {
       content: output,
       message: options.message,
       branch,
+      hash,
       amend: options.amend,
     };
   }
 
-  private formatCommit(message: string, branch: string, success: boolean, options: any): string {
+  private formatCommit(message: string, branch: string, hash: string, success: boolean, options: any): string {
     const fmt = options.fmt || 'normal';
 
     if (fmt === 'slim') {
-      return `ok ${success}  committed: "${message.substring(0, 50)}"  branch: ${branch}`;
+      return `ok ${success}  hash: ${hash || '?'}  committed: "${message.substring(0, 50)}"  branch: ${branch}`;
     } else if (fmt === 'json') {
       return JSON.stringify({
         ok: success,
         command: 'git-commit',
         message,
         branch,
+        hash,
         amend: options.amend,
       }, null, 2);
     } else {
       const lines: string[] = [];
       lines.push(`ok: ${success}`);
       lines.push(`branch: ${branch}`);
+      if (hash) lines.push(`hash: ${hash}`);
       lines.push(`message: ${message}`);
       if (options.amend) lines.push(`amend: true`);
       return lines.join('\n');

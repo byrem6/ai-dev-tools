@@ -3,7 +3,7 @@ import { CommandResult, OutputFormat } from '../../types';
 import { FileUtils } from '../../utils/file';
 import { TokenUtils } from '../../utils/token';
 import { createError } from '../../core/error';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import * as path from 'path';
 
 export class TestCommand extends Command {
@@ -34,40 +34,44 @@ export class TestCommand extends Command {
     }
 
     try {
-      let command = '';
+      let args: string[] = [];
       if (testRunner === 'jest') {
-        command = 'npx jest';
-        if (options.coverage) command += ' --coverage';
-        if (options.watch) command += ' --watch';
-        if (options.pattern) command += ` ${options.pattern}`;
+        if (options.coverage) args.push('--coverage');
+        if (options.watch) args.push('--watch');
+        if (options.pattern) args.push(options.pattern);
       }
 
-      const stdout = execSync(command, {
+      // Use spawnSync to capture both stdout and stderr (Jest writes to stderr)
+      // Combine command and args into a single string to avoid shell:true + args deprecation warning
+      const cmdArgs = [testRunner, ...args].join(' ');
+      const result = spawnSync(`npx ${cmdArgs}`, [], {
         cwd: targetPath,
         encoding: 'utf-8',
+        shell: true,
       });
+      const output = (result.stdout || '') + (result.stderr || '');
 
-      const results = this.parseTestOutput(stdout, testRunner);
-      const output = this.formatTests(results, testRunner, options);
+      const results = this.parseTestOutput(output, testRunner);
+      const formatted = this.formatTests(results, testRunner, options);
 
       return {
         ok: results.failed === 0,
         command: 'test',
-        tokenEstimate: TokenUtils.estimateTokens(output),
-        content: output,
+        tokenEstimate: TokenUtils.estimateTokens(formatted),
+        content: formatted,
         testRunner,
         results,
       };
     } catch (error: any) {
       const stderr = error.stderr || error.stdout || '';
       const results = this.parseTestOutput(stderr, testRunner);
-      const output = this.formatTests(results, testRunner, options);
+      const formatted = this.formatTests(results, testRunner, options);
 
       return {
         ok: results.failed === 0,
         command: 'test',
-        tokenEstimate: TokenUtils.estimateTokens(output),
-        content: output,
+        tokenEstimate: TokenUtils.estimateTokens(formatted),
+        content: formatted,
         testRunner,
         results,
       };
