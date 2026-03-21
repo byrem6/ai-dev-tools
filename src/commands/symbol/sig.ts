@@ -22,16 +22,26 @@ export class SigCommand extends Command {
   }
 
   private async findSignature(symbol: string, searchPath: string, options: any): Promise<CommandResult> {
-    if (!FileUtils.fileExists(searchPath)) {
+    let files: string[] = [];
+    
+    // Check if searchPath is a file or directory
+    const pathStats = FileUtils.fileExists(searchPath) ? 
+      require('fs').statSync(searchPath) : null;
+    
+    if (pathStats && pathStats.isFile()) {
+      // Single file
+      files = [searchPath];
+    } else if (pathStats && pathStats.isDirectory()) {
+      // Directory - use glob
+      files = await fg.glob('**/*.{ts,tsx,js,jsx}', {
+        cwd: searchPath,
+        onlyFiles: true,
+        absolute: true,
+        ignore: this.configManager.get('excludeByDefault'),
+      });
+    } else {
       throw createError('ENOENT', searchPath);
     }
-
-    const files = await fg.glob('**/*.{ts,tsx,js,jsx}', {
-      cwd: searchPath,
-      onlyFiles: true,
-      absolute: true,
-      ignore: this.configManager.get('excludeByDefault'),
-    });
 
     const signatures: any[] = [];
     const symbolLower = symbol.toLowerCase();

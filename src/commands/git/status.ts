@@ -40,22 +40,30 @@ export class GitStatusCommand extends Command {
     const untracked: string[] = [];
     const conflicts: string[] = [];
 
-    status.split('\n').forEach((line: string) => {
-      if (line.match(/^[ADMRU].\s/)) {
-        const file = line.substring(3).trim();
-        if (line.startsWith('UU') || line.startsWith('AA') || line.startsWith('DD')) {
-          conflicts.push(file);
-        } else {
-          staged.push(`${line[0]}  ${file}`);
+    // Handle object format from GitUtils.getStatus()
+    if (typeof status === 'object' && status.staged) {
+      staged.push(...(status.staged || []));
+      unstaged.push(...(status.unstaged || []));
+      untracked.push(...(status.untracked || []));
+    } else if (typeof status === 'string') {
+      // Fallback for string format
+      status.split('\n').forEach((line: string) => {
+        if (line.match(/^[ADMRU].\s/)) {
+          const file = line.substring(3).trim();
+          if (line.startsWith('UU') || line.startsWith('AA') || line.startsWith('DD')) {
+            conflicts.push(file);
+          } else {
+            staged.push(`${line[0]}  ${file}`);
+          }
+        } else if (line.match(/^.[ADMRU]\s/)) {
+          const file = line.substring(3).trim();
+          unstaged.push(`${line[1]}  ${file}`);
+        } else if (line.startsWith('??')) {
+          const file = line.substring(3).trim();
+          untracked.push(`?  ${file}`);
         }
-      } else if (line.match(/^.[ADMRU]\s/)) {
-        const file = line.substring(3).trim();
-        unstaged.push(`${line[1]}  ${file}`);
-      } else if (line.startsWith('??')) {
-        const file = line.substring(3).trim();
-        untracked.push(`?  ${file}`);
-      }
-    });
+      });
+    }
 
     const output = this.formatStatus(branchName, staged, unstaged, untracked, conflicts, options);
 

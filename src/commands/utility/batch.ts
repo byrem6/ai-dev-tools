@@ -159,6 +159,11 @@ export class BatchCommand extends Command {
         const readCmd = new ReadCommand(this.formatManager, this.configManager, this.sessionManager);
         return await readCmd.execute(...args);
 
+      case 'peek':
+        const { PeekCommand } = await import('../../commands/read/peek');
+        const peekCmd = new PeekCommand(this.formatManager, this.configManager, this.sessionManager);
+        return await peekCmd.execute(...args);
+
       case 'grep':
         const { GrepCommand } = await import('../../commands/search/grep');
         const grepCmd = new GrepCommand(this.formatManager, this.configManager, this.sessionManager);
@@ -194,8 +199,23 @@ export class BatchCommand extends Command {
         const contextCmd = new ContextCommand(this.formatManager, this.configManager, this.sessionManager);
         return await contextCmd.execute(...args);
 
+      case 'stats':
+        const { StatsCommand } = await import('../../commands/map/stats');
+        const statsCmd = new StatsCommand(this.formatManager, this.configManager, this.sessionManager);
+        return await statsCmd.execute(...args);
+
+      case 'map':
+        const { MapCommand } = await import('../../commands/map/map');
+        const mapCmd = new MapCommand(this.formatManager, this.configManager, this.sessionManager);
+        return await mapCmd.execute(...args);
+
+      case 'health':
+        const { HealthCommand } = await import('../../commands/utility/health');
+        const healthCmd = new HealthCommand(this.formatManager, this.configManager, this.sessionManager);
+        return await healthCmd.execute(...args);
+
       default:
-        throw new Error(`Unknown command: ${op.command}`);
+        throw new Error(`Unknown command: ${op.command}. Supported: read, peek, grep, where, symbols, verify, patch, complexity, context, stats, map, health`);
     }
   }
 
@@ -232,8 +252,11 @@ export class BatchCommand extends Command {
     const parts = this.splitCommandArgs(cmdStr);
     if (parts.length === 0) return null;
 
+    // Normalize command name to lowercase
+    const commandName = parts[0].toLowerCase();
+    
     return {
-      command: parts[0],
+      command: commandName,
       args: parts.slice(1),
     };
   }

@@ -69,9 +69,12 @@ export class GitLogCommand extends Command {
     if (fmt === 'slim') {
       const lines: string[] = [];
       commits.forEach(commit => {
-        const author = commit.author.split('<')[0].trim();
+        // Handle object format from GitUtils.getLog()
+        const authorName = typeof commit.author === 'object' 
+          ? commit.author.name 
+          : commit.author.split('<')[0].trim();
         const date = commit.date.substring(0, 10);
-        lines.push(`${commit.hashShort}  ${commit.message.trim().substring(0, 50)}  ${author}  ${date}`);
+        lines.push(`${commit.hashShort}  ${commit.message.trim().substring(0, 50)}  ${authorName}  ${date}`);
       });
       lines.push(`---`);
       lines.push(`${commits.length} commits`);
@@ -90,9 +93,12 @@ export class GitLogCommand extends Command {
       lines.push('===');
 
       commits.forEach(commit => {
-        const author = commit.author.split('<')[0].trim();
+        // Handle object format from GitUtils.getLog()
+        const authorName = typeof commit.author === 'object' 
+          ? commit.author.name 
+          : commit.author.split('<')[0].trim();
         const date = commit.date.substring(0, 10);
-        lines.push(`${commit.hashShort}  ${date}  ${author}`);
+        lines.push(`${commit.hashShort}  ${date}  ${authorName}`);
         lines.push(`  ${commit.message.trim()}`);
         lines.push('');
       });
