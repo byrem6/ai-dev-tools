@@ -1,4 +1,4 @@
-export type OutputFormat = 'slim' | 'normal' | 'json';
+export type OutputFormat = 'slim' | 'normal' | 'full' | 'json';
 
 export interface CommandResult {
   ok: boolean;
