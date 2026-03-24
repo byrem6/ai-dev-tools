@@ -101,6 +101,14 @@ export class GitDiffCommand extends Command {
       lines.push(`---`);
       lines.push(`${files.length} files  +${totalInsertions} -${totalDeletions}`);
       return lines.join('\n');
+    } else if (fmt === 'full') {
+      const lines: string[] = [];
+      lines.push(`files: ${files.length}  +${totalInsertions} -${totalDeletions}`);
+      lines.push('===');
+      if (diff.trim()) {
+        lines.push(diff.trim());
+      }
+      return lines.join('\n');
     } else if (fmt === 'json') {
       return JSON.stringify({
         ok: true,

@@ -28,6 +28,8 @@ export class FormatManager {
     switch (this.format) {
       case 'slim':
         return this.toSlim(result);
+      case 'full':
+        return this.toFull(result);
       case 'normal':
         return this.toNormal(result);
       case 'json':
@@ -40,6 +42,7 @@ export class FormatManager {
       switch (this.format) {
         case 'slim':
           return error.toSlim();
+        case 'full':
         case 'normal':
           return error.toNormal();
         case 'json':
@@ -51,6 +54,7 @@ export class FormatManager {
     switch (this.format) {
       case 'slim':
         return `ok false\n${err.code} ${err.path || ''}\ntip: ${err.tip || ''}`;
+      case 'full':
       case 'normal':
         return `ok: false\nerror: ${err.error}\ncode: ${err.code}${err.path ? `\npath: ${err.path}` : ''}${err.tip ? `\ntip: ${err.tip}` : ''}`;
       case 'json':
@@ -69,6 +73,24 @@ export class FormatManager {
     }
     if (result.content) {
       output += `\n${result.content}`;
+    }
+    return output;
+  }
+
+  private toFull(result: CommandResult): string {
+    if (!result.ok && !result.content) {
+      return 'ok: false';
+    }
+
+    let output = `ok: ${result.ok ? 'true' : 'false'}`;
+    if (result.command) {
+      output += `\ncommand: ${result.command}`;
+    }
+    if (result.tokenEstimate) {
+      output += `\n~tokens: ${result.tokenEstimate}`;
+    }
+    if (result.content) {
+      output += `\n---\n${result.content}`;
     }
     return output;
   }
